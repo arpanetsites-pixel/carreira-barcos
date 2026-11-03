@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Carreira Barcos · Barcos em alumínio naval para pesca esportiva</title>
+  <meta name="description" content="A Carreira Barcos fabrica barcos em alumínio naval para pesca esportiva e faz manutenção e reparação de barcos de passageiros, carga e uso militar.">
+  <meta property="og:title" content="Carreira Barcos">
+  <meta property="og:description" content="Resistência que acompanha o seu espírito de aventura. Barcos em alumínio naval para pesca esportiva.">
+  <meta property="og:image" content="assets/frames/desktop/f_0001.webp">
+  <meta name="theme-color" content="#02031a">
+  <link rel="icon" type="image/png" href="assets/logo-sm.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..700&display=swap" rel="stylesheet">
+  <link rel="preload" as="image" href="assets/frames/desktop/f_0001.webp">
+  <link rel="stylesheet" href="estilo.css">
+</head>
+<body>
+
+<header class="topo">
+  <a href="#inicio" class="marca" aria-label="Carreira Barcos">
+    <img src="assets/logo-sm.png" alt="Carreira Barcos" class="marca-logo">
+  </a>
+  <nav class="menu" aria-label="Seções">
+    <a href="#sobre">Sobre</a>
+    <a href="#diferenciais">Diferenciais</a>
+    <a href="#servicos">Serviços</a>
+    <a href="#contato" class="menu-cta">Fale conosco</a>
+  </nav>
+</header>
+
+<main>
+
+  <!-- ABERTURA: o barco navega com a rolagem -->
+  <section id="inicio" class="cine" style="--altura: 720vh">
+    <div class="cine-palco">
+      <canvas class="cine-canvas" aria-hidden="true"></canvas>
+      <div class="cine-vinheta"></div>
+      <h1 class="so-leitor">Carreira Barcos · Resistência que acompanha o seu espírito de aventura.</h1>
+
+      <div class="cine-dica" aria-hidden="true"><span></span></div>
+    </div>
+  </section>
+
+  <!-- 01 SOBRE: proa à direita, texto à esquerda -->
+  <section id="sobre" class="secao">
+    <img class="arte arte--direita" src="assets/img/sobre.webp" alt="" loading="lazy">
+    <div class="secao-grade">
+      <div class="painel revelar">
+        <span class="rotulo">01</span>
+        <h2>Alumínio naval, do casco ao convés</h2>
+        <p>A Carreira Barcos fabrica barcos em alumínio naval para a pesca esportiva. Cada casco é pensado para o que o rio cobra: pedra, tronco submerso e muitas horas de navegação.</p>
+        <p>O resultado é um barco leve na água, firme na pancada e pronto para a próxima saída de pesca.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 02 DIFERENCIAIS: rio de fundo, cartões por cima -->
+  <section id="diferenciais" class="secao secao--larga">
+    <img class="arte arte--fundo" src="assets/img/diferenciais.webp" alt="" loading="lazy">
+    <div class="painel painel--cabecalho revelar">
+      <span class="rotulo">02</span>
+      <h2>Por que alumínio naval</h2>
+    </div>
+    <div class="cartoes">
+      <article class="painel cartao revelar">
+        <h3>Resistência do Alumínio Naval</h3>
+        <p>Estrutura robusta para acompanhar você em grandes pescarias.</p>
+      </article>
+      <article class="painel cartao revelar">
+        <h3>Alta Performance na Água</h3>
+        <p>Leveza e resistência que se combinam para entregar desempenho na navegação.</p>
+      </article>
+      <article class="painel cartao revelar">
+        <h3>Durabilidade em Cada Detalhe</h3>
+        <p>Alumínio naval resistente à corrosão para quem busca um barco feito para durar.</p>
+      </article>
+      <article class="painel cartao revelar">
+        <h3>Feitos para Quem Ama Pescar</h3>
+        <p>Barcos que unem resistência e praticidade para aproveitar cada jornada de pesca.</p>
+      </article>
+    </div>
+  </section>
+
+  <!-- 03 SERVIÇOS: solda à esquerda, lista à direita -->
+  <section id="servicos" class="secao">
+    <img class="arte arte--esquerda" src="assets/img/servicos.webp" alt="" loading="lazy">
+    <div class="secao-grade secao-grade--direita">
+      <div class="painel revelar">
+        <span class="rotulo">03</span>
+        <h2>Manutenção e reparação</h2>
+        <p>Além de fabricar, cuidamos de embarcações que trabalham todo dia.</p>
+        <ol class="passos">
+          <li><strong>Transporte de passageiros</strong><span>Manutenção e reparação de barcos que levam gente de uma margem à outra.</span></li>
+          <li><strong>Carga</strong><span>Manutenção e reparação de barcos de transporte de carga.</span></li>
+          <li><strong>Uso militar</strong><span>Manutenção e reparação de embarcações de uso militar.</span></li>
+        </ol>
+      </div>
+    </div>
+  </section>
+
+  <!-- 04 CONTATO: formulário que chega no e-mail de config.js -->
+  <section id="contato" class="secao secao--contato">
+    <img class="arte arte--fundo arte--suave" src="assets/img/contato.webp" alt="" loading="lazy">
+    <div class="painel painel--form revelar">
+      <span class="rotulo">04</span>
+      <h2>Fale com a Carreira</h2>
+      <p>Conte que barco você procura ou qual embarcação precisa de reparo.</p>
+      <form class="form" novalidate>
+        <div class="campo">
+          <label for="f-nome">Nome</label>
+          <input id="f-nome" name="nome" autocomplete="name" required>
+        </div>
+        <div class="campo">
+          <label for="f-email">E-mail</label>
+          <input id="f-email" name="email" type="email" autocomplete="email" required>
+        </div>
+        <div class="campo">
+          <label for="f-tel">WhatsApp</label>
+          <input id="f-tel" name="telefone" type="tel" autocomplete="tel" inputmode="tel" required>
+        </div>
+        <div class="campo campo--inteiro">
+          <label for="f-msg">Como podemos ajudar?</label>
+          <textarea id="f-msg" name="mensagem" rows="4"></textarea>
+        </div>
+        <input type="text" name="_honey" class="pote" tabindex="-1" autocomplete="off" aria-hidden="true">
+        <button type="submit" class="botao campo--inteiro">Enviar</button>
+        <p class="form-status campo--inteiro" role="status" aria-live="polite"></p>
+      </form>
+    </div>
+  </section>
+
+</main>
+
+<footer class="rodape">
+  <div class="painel rodape-painel">
+    <img src="assets/logo-sm.png" alt="Carreira Barcos" class="marca-logo">
+    <span>Barcos em alumínio naval · (62) 99393-8737</span>
+    <span>© <span data-ano></span> Carreira Barcos</span>
+  </div>
+</footer>
+
+<a class="whats" target="_blank" rel="noopener" aria-label="Conversar no WhatsApp">
+  <svg viewBox="0 0 32 32" aria-hidden="true"><path fill="currentColor" d="M16 3C9 3 3.3 8.6 3.3 15.6c0 2.4.7 4.7 1.9 6.7L3 29l6.9-2.1c1.9 1 4 1.6 6.1 1.6 7 0 12.7-5.6 12.7-12.6S23 3 16 3Zm0 23.1c-1.9 0-3.8-.5-5.4-1.5l-.4-.2-4.1 1.2 1.3-4-.3-.4a10.4 10.4 0 0 1-1.6-5.6C5.5 9.8 10.2 5.2 16 5.2s10.5 4.6 10.5 10.4S21.8 26.1 16 26.1Zm5.8-7.8c-.3-.2-1.9-.9-2.2-1-.3-.1-.5-.2-.7.2-.2.3-.8 1-1 1.2-.2.2-.4.2-.7.1-.3-.2-1.3-.5-2.5-1.6-.9-.8-1.6-1.8-1.7-2.1-.2-.3 0-.5.1-.6l.5-.6.3-.5c.1-.2 0-.4 0-.6l-1-2.4c-.3-.6-.5-.5-.7-.5h-.6c-.2 0-.6.1-.9.4-.3.3-1.2 1.1-1.2 2.8s1.2 3.2 1.4 3.4c.2.2 2.4 3.6 5.7 5 .8.4 1.4.6 1.9.7.8.3 1.6.2 2.2.1.7-.1 1.9-.8 2.2-1.5.3-.7.3-1.4.2-1.5-.1-.2-.3-.3-.6-.4Z"/></svg>
+</a>
+
+<script src="config.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
