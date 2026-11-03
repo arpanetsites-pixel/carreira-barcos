@@ -57,9 +57,14 @@
       if (j < 0 || (j === desenhado && !forcar)) return;
       const img = quadros[j];
       const cw = canvas.width, ch = canvas.height;
-      const escala = Math.max(cw / img.naturalWidth, ch / img.naturalHeight); // "cover"
+      let escala = Math.max(cw / img.naturalWidth, ch / img.naturalHeight); // "cover"
+      // Vídeo vertical (celular): mostra a largura inteira para não cortar logo e barco
+      if (img.naturalHeight > img.naturalWidth) escala = cw / img.naturalWidth;
       const w = img.naturalWidth * escala, h = img.naturalHeight * escala;
-      ctx.drawImage(img, (cw - w) / 2, (ch - h) / 2, w, h);
+      const y = h < ch ? ch - h : (ch - h) / 2;
+      // sobra no topo: estende o céu do próprio quadro (a 1ª linha esticada)
+      if (y > 0) ctx.drawImage(img, 0, 0, img.naturalWidth, 2, 0, 0, cw, y + 2);
+      ctx.drawImage(img, (cw - w) / 2, y, w, h);
       desenhado = j;
     }
 
@@ -184,7 +189,7 @@
   }
 })();
 
-/* ── Som da apresentação: trilha + efeitos sincronizados com a rolagem ──── */
+/* ── Som da apresentação: efeitos sincronizados com a rolagem ─────────── */
 (() => {
   const convite = document.querySelector(".som-convite");
   const alternar = document.querySelector(".som-alternar");
@@ -192,14 +197,16 @@
   const AC = window.AudioContext || window.webkitAudioContext;
   if (!alternar || !AC) { alternar && (alternar.hidden = true); convite && (convite.hidden = true); return; }
 
-  // Volumes da trilha: alto na apresentação, baixo no resto do site, mais baixo durante os efeitos
-  const VOL = { apresentacao: 0.55, site: 0.14, efeito: 0.3 };
-  // Pontos da rolagem (0 a 1) em que a logo começa a borbulhar e rompe a água
-  const ZONA = { ronco: 0.49, impacto: 0.643, fim: 0.95, rearmar: 0.45 };
+  // Pontos da rolagem (0 a 1) em que a água começa a borbulhar e a logo rompe a superfície.
+  // O celular usa um vídeo vertical próprio, com outro tempo.
+  const celular = matchMedia("(max-width: 760px)").matches;
+  const ZONA = celular
+    ? { ronco: 0.545, impacto: 0.62, fim: 0.95, rearmar: 0.5 }
+    : { ronco: 0.49, impacto: 0.643, fim: 0.95, rearmar: 0.45 };
 
-  let ctx, mestre, trilhaGain, trilhaEl, roncoGain, roncoNo;
+  let ctx, mestre, roncoGain, roncoNo;
   const buf = {};
-  let iniciado = false, ligado = false, fase = "antes", efeitoAte = 0;
+  let iniciado = false, ligado = false, fase = "antes";
 
   const progresso = () => {
     if (!cine) return 1;
@@ -207,7 +214,6 @@
     const curso = cine.offsetHeight - innerHeight;
     return Math.min(1, Math.max(0, -r.top / (curso || 1)));
   };
-  const naApresentacao = () => !cine || cine.getBoundingClientRect().bottom > innerHeight * 0.55;
 
   const decodificar = (url) => fetch(url).then((r) => r.arrayBuffer())
     .then((a) => new Promise((ok, erro) => ctx.decodeAudioData(a, ok, erro)));
@@ -215,10 +221,6 @@
   const iniciar = () => {
     ctx = new AC();
     mestre = ctx.createGain(); mestre.gain.value = 0; mestre.connect(ctx.destination);
-    trilhaEl = new Audio("assets/audio/trilha.mp3");
-    trilhaEl.loop = true; trilhaEl.preload = "auto";
-    trilhaGain = ctx.createGain(); trilhaGain.gain.value = 0;
-    ctx.createMediaElementSource(trilhaEl).connect(trilhaGain).connect(mestre);
     decodificar("assets/audio/ronco.mp3").then((b) => (buf.ronco = b)).catch(() => {});
     decodificar("assets/audio/impacto.mp3").then((b) => (buf.impacto = b)).catch(() => {});
     iniciado = true;
@@ -231,7 +233,6 @@
     const no = ctx.createBufferSource(); no.buffer = buf[nome];
     const g = ctx.createGain(); g.gain.value = ganho;
     no.connect(g).connect(mestre); no.start();
-    efeitoAte = ctx.currentTime + buf[nome].duration;
     return { no, g };
   };
   const pararRonco = (t = 0.35) => {
@@ -239,13 +240,6 @@
     rampa(roncoGain, 0, t);
     const n = roncoNo; setTimeout(() => { try { n.stop(); } catch (e) {} }, t * 1000 + 100);
     roncoNo = roncoGain = null;
-  };
-
-  const ajustarTrilha = () => {
-    if (!iniciado || !ligado) return;
-    const alvo = ctx.currentTime < efeitoAte && naApresentacao() ? VOL.efeito
-      : naApresentacao() ? VOL.apresentacao : VOL.site;
-    rampa(trilhaGain, alvo, 1.8);
   };
 
   const sincronizar = () => {
@@ -259,16 +253,15 @@
     if ((fase === "antes" || fase === "ronco") && p >= ZONA.impacto && p < ZONA.fim) {
       pararRonco(0.2); if (tocar("impacto", 1)) fase = "impacto";
     }
-    ajustarTrilha();
   };
 
   const ligar = () => {
     if (!iniciado) iniciar();
     ligado = true;
     ctx.resume && ctx.resume();
-    trilhaEl.play().catch(() => {});
-    rampa(mestre, 1, 0.4);
-    rampa(trilhaGain, naApresentacao() ? VOL.apresentacao : VOL.site, 2.5);
+    // toca um silêncio curto no próprio clique: destrava o áudio no iPhone
+    const s = ctx.createBufferSource(); s.buffer = ctx.createBuffer(1, 1, 22050); s.connect(ctx.destination); s.start();
+    rampa(mestre, 1, 0.3);
     alternar.setAttribute("aria-pressed", "true");
     alternar.setAttribute("aria-label", "Desligar som");
     sincronizar();
@@ -276,8 +269,7 @@
   const desligar = () => {
     ligado = false;
     pararRonco(0.2);
-    rampa(mestre, 0, 0.4);
-    setTimeout(() => { if (!ligado) trilhaEl.pause(); }, 600);
+    rampa(mestre, 0, 0.3);
     alternar.setAttribute("aria-pressed", "false");
     alternar.setAttribute("aria-label", "Ativar som");
   };
@@ -285,7 +277,6 @@
   convite && convite.addEventListener("click", ligar);
   alternar.addEventListener("click", () => (ligado ? desligar() : ligar()));
   addEventListener("scroll", sincronizar, { passive: true });
-  setInterval(() => ligado && ajustarTrilha(), 700);
   document.addEventListener("visibilitychange", () => {
     if (!iniciado) return;
     if (document.hidden) ctx.suspend && ctx.suspend();
