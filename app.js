@@ -112,6 +112,77 @@
     mover();
   }
 
+  /* ── Modelos: um barco por vez, conforme a rolagem ────────────────────── */
+  const frota = document.querySelector(".frota");
+  if (frota) {
+    const modelos = [...frota.querySelectorAll(".modelo")];
+    const contador = frota.querySelector(".frota-contador b");
+    const tracos = [...frota.querySelectorAll(".frota-trilha i")];
+    const n = modelos.length;
+
+    // quebra o nome em letras (o leitor de tela continua lendo a palavra inteira)
+    modelos.forEach((m) => {
+      const h = m.querySelector(".modelo-nome");
+      const nome = h.textContent.trim();
+      h.setAttribute("aria-label", nome);
+      h.innerHTML = [...nome].map((c, i) => `<span class="letra" style="--i:${i}" aria-hidden="true">${c}</span>`).join("");
+    });
+
+    // imagens dos barcos começam a baixar quando a abertura está perto do fim
+    new IntersectionObserver(([e], o) => {
+      if (!e.isIntersecting) return;
+      frota.querySelectorAll("img[loading=lazy]").forEach((img) => (img.loading = "eager"));
+      o.disconnect();
+    }, { rootMargin: "150% 0px" }).observe(frota);
+
+    // números da ficha sobem do zero até o valor quando o barco chega
+    const contar = (m) => {
+      m.querySelectorAll("[data-conta]").forEach((el, k) => {
+        const fim = Number(el.dataset.conta), atraso = 1000 + k * 120, dur = 1100;
+        cancelAnimationFrame(el._raf); clearTimeout(el._t);
+        el.textContent = "0";
+        el._t = setTimeout(() => {
+          const t0 = performance.now();
+          const passo = (agora) => {
+            const x = Math.min(1, (agora - t0) / dur);
+            el.textContent = Math.round(fim * (1 - Math.pow(1 - x, 3)));
+            if (x < 1) el._raf = requestAnimationFrame(passo);
+          };
+          el._raf = requestAnimationFrame(passo);
+        }, atraso);
+      });
+    };
+
+    let ativo = -2;
+    const atualizar = () => {
+      const r = frota.getBoundingClientRect();
+      if (r.bottom < 0 || r.top > innerHeight) return;
+      const curso = frota.offsetHeight - innerHeight;
+      const p = Math.min(0.9999, Math.max(0, -r.top / (curso || 1)));
+      // o 1º barco entra quando a seção já tomou boa parte da tela
+      const idx = r.top > innerHeight * 0.3 ? -1 : Math.floor(p * n);
+      const local = p * n - Math.max(0, idx);
+
+      if (idx !== ativo) {
+        modelos.forEach((m, i) => {
+          m.classList.toggle("ativo", i === idx);
+          m.classList.toggle("passou", i < idx);
+        });
+        if (idx >= 0 && contador) contador.textContent = String(idx + 1).padStart(2, "0");
+        if (idx >= 0) contar(modelos[idx]);
+        if (idx >= 0 && ativo !== -2) dispatchEvent(new CustomEvent("frota:troca", { detail: { de: ativo, para: idx } }));
+        ativo = idx;
+      }
+      if (idx >= 0) modelos[idx].style.setProperty("--t", local.toFixed(3));
+      tracos.forEach((t, i) => t.style.setProperty("--p", i < idx ? 1 : i === idx ? local.toFixed(3) : 0));
+    };
+    if (!reduzir) {
+      addEventListener("scroll", () => requestAnimationFrame(atualizar), { passive: true });
+      addEventListener("resize", atualizar);
+      atualizar();
+    }
+  }
+
   /* ── Topo, revelar e ano ──────────────────────────────────────────────── */
   const topo = document.querySelector(".topo");
   const whats = document.querySelector(".whats");
@@ -273,6 +344,31 @@
     alternar.setAttribute("aria-pressed", "false");
     alternar.setAttribute("aria-label", "Ativar som");
   };
+
+  // "Whoosh" de passagem a cada barco: ruído filtrado com varredura, gerado na hora (sem arquivo)
+  let ultimoWhoosh = 0;
+  const whoosh = () => {
+    if (!iniciado || !ligado || ctx.state !== "running") return;
+    const agora = ctx.currentTime;
+    if (agora - ultimoWhoosh < 0.35) return; // rolagem rápida não vira metralhadora
+    ultimoWhoosh = agora;
+    const dur = 1.1;
+    const b = ctx.createBuffer(1, Math.floor(ctx.sampleRate * dur), ctx.sampleRate);
+    const d = b.getChannelData(0);
+    for (let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1;
+    const fonte = ctx.createBufferSource(); fonte.buffer = b;
+    const filtro = ctx.createBiquadFilter(); filtro.type = "bandpass"; filtro.Q.value = 1.4;
+    filtro.frequency.setValueAtTime(300, agora);
+    filtro.frequency.exponentialRampToValueAtTime(2400, agora + dur * 0.45);
+    filtro.frequency.exponentialRampToValueAtTime(500, agora + dur);
+    const g = ctx.createGain();
+    g.gain.setValueAtTime(0.0001, agora);
+    g.gain.exponentialRampToValueAtTime(0.32, agora + dur * 0.4);
+    g.gain.exponentialRampToValueAtTime(0.0001, agora + dur);
+    fonte.connect(filtro).connect(g).connect(mestre);
+    fonte.start(agora); fonte.stop(agora + dur);
+  };
+  addEventListener("frota:troca", whoosh);
 
   convite && convite.addEventListener("click", ligar);
   alternar.addEventListener("click", () => (ligado ? desligar() : ligar()));
