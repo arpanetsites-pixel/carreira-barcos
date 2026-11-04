@@ -454,6 +454,22 @@
     card.addEventListener("pointerleave", () => ["--mx", "--my", "--rx", "--ry"].forEach((v) => card.style.removeProperty(v)));
   });
 
+  /* ── Soluções: WhatsApp com o serviço escolhido + luz que segue o mouse ─ */
+  document.querySelectorAll(".solucao").forEach((card) => {
+    const link = card.querySelector(".solucao-link");
+    if (link && S.whatsapp && S.whatsapp.numero) {
+      const num = String(S.whatsapp.numero).replace(/\D/g, "");
+      link.href = `https://wa.me/${num}?text=${encodeURIComponent(`Olá! Gostaria de saber mais sobre ${card.dataset.servico}.`)}`;
+      link.target = "_blank"; link.rel = "noopener";
+    }
+    if (reduzir || !matchMedia("(hover: hover)").matches) return;
+    card.addEventListener("pointermove", (e) => {
+      const r = card.getBoundingClientRect();
+      card.style.setProperty("--mx", `${e.clientX - r.left}px`); card.style.setProperty("--my", `${e.clientY - r.top}px`);
+    });
+    card.addEventListener("pointerleave", () => ["--mx", "--my"].forEach((v) => card.style.removeProperty(v)));
+  });
+
   /* ── Menu do celular ──────────────────────────────────────────────────── */
   const botaoMenu = document.querySelector(".menu-botao");
   const menuMovel = document.getElementById("menu-movel");
