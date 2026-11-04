@@ -436,6 +436,24 @@
     whats.href = `https://wa.me/${num}?text=${encodeURIComponent(S.whatsapp.mensagem || "")}`;
   }
 
+  /* ── Motores: orçamento direto no WhatsApp + luz que segue o mouse ───── */
+  document.querySelectorAll(".motor").forEach((card) => {
+    const botao = card.querySelector(".motor-botao");
+    if (botao && S.whatsapp && S.whatsapp.numero) {
+      const num = String(S.whatsapp.numero).replace(/\D/g, "");
+      botao.href = `https://wa.me/${num}?text=${encodeURIComponent(`Olá! Gostaria de solicitar um orçamento do motor ${card.dataset.motor}.`)}`;
+      botao.target = "_blank"; botao.rel = "noopener";
+    }
+    if (reduzir || !matchMedia("(hover: hover)").matches) return;
+    card.addEventListener("pointermove", (e) => {
+      const r = card.getBoundingClientRect();
+      const x = (e.clientX - r.left) / r.width, y = (e.clientY - r.top) / r.height;
+      card.style.setProperty("--mx", `${x * 100}%`); card.style.setProperty("--my", `${y * 100}%`);
+      card.style.setProperty("--rx", `${(0.5 - y) * 6}deg`); card.style.setProperty("--ry", `${(x - 0.5) * 8}deg`);
+    });
+    card.addEventListener("pointerleave", () => ["--mx", "--my", "--rx", "--ry"].forEach((v) => card.style.removeProperty(v)));
+  });
+
   /* ── Menu do celular ──────────────────────────────────────────────────── */
   const botaoMenu = document.querySelector(".menu-botao");
   const menuMovel = document.getElementById("menu-movel");
