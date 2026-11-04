@@ -203,6 +203,215 @@
     }
   }
 
+  /* ── Galeria: o piloto mostra a foto e coloca no quadro ao lado ───────── */
+  const galeria = document.querySelector(".galeria");
+  if (galeria) {
+    const tela = galeria.querySelector(".galeria-canvas");
+    const g = tela.getContext("2d");
+    const quadroEl = galeria.querySelector(".galeria-quadro");
+    const fotosEl = [...galeria.querySelectorAll(".galeria-foto")];
+    const contador = galeria.querySelector(".galeria-contador");
+    const N = fotosEl.length;
+    galeria.style.setProperty("--n", N);
+    if (contador) contador.innerHTML = `<b>00</b> / ${String(N).padStart(2, "0")}`;
+    const contB = contador && contador.querySelector("b");
+
+    // quadros da sequência do piloto: 1 a cada 2 do vídeo, 1600x900, verde do cartão vazado
+    const BASE = "assets/galeria/";
+    let info = null;
+    const quadros = [];
+    const fotos = fotosEl.map((el) => { const im = new Image(); im.decoding = "async"; im.src = el.currentSrc || el.src; return im; });
+    const ok = (im) => im && im.complete && im.naturalWidth;
+
+    // posição do cartão na tela: vídeo ancorado embaixo; no celular, só o lado do piloto
+    const QUADRO_V = { x: 0.62, y: 0.19, w: 0.36 }; // quadro grande, em fração do vídeo (desktop)
+    let L = null; // layout atual em pixels CSS
+    const medir = () => {
+      const W = innerWidth, H = galeria.querySelector(".galeria-palco").clientHeight;
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      tela.width = Math.round(W * dpr); tela.height = Math.round(H * dpr);
+      if (celular) {
+        const corte = 0.6; // mostra 60% da largura do vídeo (piloto + cartão)
+        const w = W * 1.04, h = w * (900 / (1600 * corte));
+        L = { dpr, sx: 0, sw: 1600 * corte, x: (W - w) / 2, y: H - h, w, h, esc: w / (1600 * corte) };
+        const qw = Math.min(W * 0.8, (H - h - 120) * (700 / 658));
+        Object.assign(quadroEl.style, { left: `${(W - qw) / 2}px`, top: `${Math.max(100, (H - h - qw * 658 / 700) / 2 + 40)}px`, width: `${qw}px` });
+      } else {
+        let h = H * 0.86, w = h * 16 / 9;
+        if (w > W) { w = W; h = w * 9 / 16; }
+        L = { dpr, sx: 0, sw: 1600, x: (W - w) / 2, y: H - h, w, h, esc: w / 1600 };
+        Object.assign(quadroEl.style, { left: `${L.x + QUADRO_V.x * w}px`, top: `${L.y + QUADRO_V.y * h}px`, width: `${QUADRO_V.w * w}px` });
+      }
+      desenhado = -1;
+    };
+
+    // homografia quadrado unitário → quadrilátero (para a foto acompanhar a perspectiva do cartão)
+    const homografia = (p) => {
+      const [[x0, y0], [x1, y1], [x2, y2], [x3, y3]] = p;
+      const dx1 = x1 - x2, dx2 = x3 - x2, dx3 = x0 - x1 + x2 - x3;
+      const dy1 = y1 - y2, dy2 = y3 - y2, dy3 = y0 - y1 + y2 - y3;
+      let a, b, d, e, gg = 0, hh = 0;
+      if (Math.abs(dx3) < 1e-6 && Math.abs(dy3) < 1e-6) { a = x1 - x0; b = x2 - x1; d = y1 - y0; e = y2 - y1; }
+      else {
+        const den = dx1 * dy2 - dx2 * dy1;
+        gg = (dx3 * dy2 - dx2 * dy3) / den; hh = (dx1 * dy3 - dx3 * dy1) / den;
+        a = x1 - x0 + gg * x1; b = x3 - x0 + hh * x3; d = y1 - y0 + gg * y1; e = y3 - y0 + hh * y3;
+      }
+      return (u, v) => { const z = gg * u + hh * v + 1; return [(a * u + b * v + x0) / z, (d * u + e * v + y0) / z]; };
+    };
+    const triangulo = (im, s0, s1, s2, d0, d1, d2) => {
+      // um pouco maior que o triângulo, para não aparecer fresta entre eles
+      const cx = (d0[0] + d1[0] + d2[0]) / 3, cy = (d0[1] + d1[1] + d2[1]) / 3;
+      const ex = (p) => { const vx = p[0] - cx, vy = p[1] - cy, l = Math.hypot(vx, vy) || 1; return [p[0] + vx / l * 0.8, p[1] + vy / l * 0.8]; };
+      g.save();
+      g.beginPath(); const a0 = ex(d0), a1 = ex(d1), a2 = ex(d2);
+      g.moveTo(a0[0], a0[1]); g.lineTo(a1[0], a1[1]); g.lineTo(a2[0], a2[1]); g.closePath(); g.clip();
+      const u1x = s1[0] - s0[0], u1y = s1[1] - s0[1], u2x = s2[0] - s0[0], u2y = s2[1] - s0[1];
+      const v1x = d1[0] - d0[0], v1y = d1[1] - d0[1], v2x = d2[0] - d0[0], v2y = d2[1] - d0[1];
+      const det = u1x * u2y - u2x * u1y;
+      if (Math.abs(det) > 1e-9) {
+        const a = (v1x * u2y - v2x * u1y) / det, c = (v2x * u1x - v1x * u2x) / det;
+        const b = (v1y * u2y - v2y * u1y) / det, d = (v2y * u1x - v1y * u2x) / det;
+        g.transform(a, b, c, d, d0[0] - a * s0[0] - c * s0[1], d0[1] - b * s0[0] - d * s0[1]);
+        g.drawImage(im, 0, 0);
+      }
+      g.restore();
+    };
+    const fotoNoCartao = (im, quad) => {
+      const pts = quad.map(([x, y]) => [L.x + (x - L.sx) * L.esc, L.y + y * L.esc]);
+      const H = homografia(pts);
+      const iw = im.naturalWidth, ih = im.naturalHeight, m = 0.035; // corta a borda branca da foto
+      const sx = iw * m, sy = ih * m, sw = iw * (1 - 2 * m), sh = ih * (1 - 2 * m);
+      const n = 6;
+      for (let i = 0; i < n; i++) for (let j = 0; j < n; j++) {
+        const u0 = i / n, u1 = (i + 1) / n, v0 = j / n, v1 = (j + 1) / n;
+        const s = (u, v) => [sx + u * sw, sy + v * sh];
+        triangulo(im, s(u0, v0), s(u1, v0), s(u1, v1), H(u0, v0), H(u1, v0), H(u1, v1));
+        triangulo(im, s(u0, v0), s(u1, v1), s(u0, v1), H(u0, v0), H(u1, v1), H(u0, v1));
+      }
+    };
+
+    let desenhado = -1, desenhadoFoto = -1;
+    const desenhar = (k, ciclo) => {
+      if (!info || !L) return;
+      // quadro pronto mais próximo
+      let j = -1;
+      for (let d = 0; d < info.total && j < 0; d++) { if (ok(quadros[k - d])) j = k - d; else if (ok(quadros[k + d])) j = k + d; }
+      if (j < 0) return;
+      const foto = j >= info.trocaFoto ? (ciclo + 1) % N : ciclo;
+      if (j === desenhado && foto === desenhadoFoto) return;
+      g.setTransform(1, 0, 0, 1, 0, 0);
+      g.clearRect(0, 0, tela.width, tela.height);
+      g.setTransform(L.dpr, 0, 0, L.dpr, 0, 0);
+      const q = info.quads[j];
+      if (q && ok(fotos[foto])) fotoNoCartao(fotos[foto], q);
+      g.drawImage(quadros[j], L.sx, 0, L.sw, 900, L.x, L.y, L.w, L.h);
+      // some com as bordas do vídeo: funde no fundo da seção
+      g.globalCompositeOperation = "destination-in";
+      const fv = g.createLinearGradient(0, L.y, 0, L.y + L.h * 0.14);
+      fv.addColorStop(0, "rgba(0,0,0,0)"); fv.addColorStop(1, "#000");
+      g.fillStyle = fv; g.fillRect(0, 0, tela.width, tela.height);
+      if (!celular) {
+        const fh = g.createLinearGradient(L.x, 0, L.x + L.w, 0);
+        fh.addColorStop(0, "rgba(0,0,0,0)"); fh.addColorStop(0.07, "#000"); fh.addColorStop(0.93, "#000"); fh.addColorStop(1, "rgba(0,0,0,0)");
+        g.fillStyle = fh; g.fillRect(0, 0, tela.width, tela.height);
+      }
+      g.globalCompositeOperation = "source-over";
+      desenhado = j; desenhadoFoto = foto;
+    };
+
+    // pilha de fotos: cada uma pousa num ângulo próprio, por cima das anteriores e um pouco maior
+    const capa = galeria.querySelector(".galeria-capa");
+    const ANG = [-6, 5, -3.5, 6.5, -5, 4];
+    const DES = [[-7, 4], [6, -3], [-4, -5], [7, 3], [-6, -2], [4, 5]]; // deslocamento em % do cartão
+    const escala = (i) => (N > 1 ? 0.8 + 0.22 * (i / (N - 1)) : 1); // a última é a maior
+    const pousada = (i) => ({ x: DES[i % DES.length][0], y: DES[i % DES.length][1], a: ANG[i % ANG.length], s: escala(i) });
+    const pos = (el, x, y, a, s, op, filtro, z) => {
+      el.style.transform = `translate(${x.toFixed(2)}%, ${y.toFixed(2)}%) rotate(${a.toFixed(2)}deg) scale(${s.toFixed(4)})`;
+      el.style.opacity = op; el.style.filter = filtro; el.style.zIndex = z;
+    };
+    // fotos de baixo escurecem um pouco conforme a pilha cresce
+    const fundo = (prof) => (prof <= 0 ? "none" : `brightness(${Math.max(0.55, 1 - prof * 0.12).toFixed(2)})`);
+    // de onde a foto sai: no computador o piloto está à esquerda; no celular, embaixo
+    const SAI = celular ? { x: 60, y: 115 } : { x: -62, y: 6 };
+    const ENTRA = [17, 29]; // quadros da sequência em que o cartão sai da mão e pousa na pilha
+    const suave = (x) => x * x * (3 - 2 * x);
+    let ultimaEntrada = -1;
+    const quadroGrande = (ciclo, k) => {
+      const r = suave(Math.min(1, Math.max(0, (k - ENTRA[0]) / (ENTRA[1] - ENTRA[0]))));
+      const topo = ciclo - 1 + r; // posição "contínua" do topo da pilha
+      pos(capa, -1, 1, -1.5, 0.74, topo > 3.5 ? 0 : 1, fundo(topo + 1), 1);
+      fotosEl.forEach((el, i) => {
+        const f = pousada(i);
+        const prof = topo - i; // quantas fotos já estão por cima desta
+        if (i < ciclo || (i === ciclo && r >= 1)) {
+          pos(el, f.x, f.y, f.a, f.s, prof > 4 ? 0 : 1, fundo(prof), i + 2);
+        } else if (i === ciclo && r > 0) {
+          // sai de onde o piloto solta o cartão (à esquerda, reto, menor) e pousa girando
+          const e = r, v = 1 - e;
+          pos(el, f.x + v * SAI.x, f.y + v * SAI.y, f.a * e, f.s * (0.72 + 0.28 * e) * (1 + Math.sin(e * Math.PI) * 0.05),
+            Math.min(1, e * 5).toFixed(3), `brightness(${(1 + v * 0.45).toFixed(3)})`, i + 2);
+        } else {
+          pos(el, f.x + SAI.x, f.y + SAI.y, 0, f.s * 0.72, 0, "none", i + 2);
+        }
+      });
+      const mostrando = ciclo + (r > 0.5 ? 1 : 0);
+      if (contB) contB.textContent = String(mostrando).padStart(2, "0");
+      galeria.classList.toggle("comecou", mostrando > 0);
+      const marca = ciclo * 2 + (r > 0.05 ? 1 : 0);
+      if (marca !== ultimaEntrada) {
+        if (ultimaEntrada >= 0 && marca > ultimaEntrada && marca % 2) dispatchEvent(new CustomEvent("frota:troca"));
+        ultimaEntrada = marca;
+      }
+    };
+
+    let alvo = 0, atual = 0, rodando = false, visivel = false;
+    const progresso = () => {
+      const r = galeria.getBoundingClientRect();
+      const curso = galeria.offsetHeight - innerHeight;
+      return Math.min(0.99999, Math.max(0, -r.top / (curso || 1)));
+    };
+    const passo = () => {
+      if (!info) { rodando = false; return; }
+      alvo = progresso() * N;
+      atual += (alvo - atual) * 0.16;
+      if (Math.abs(alvo - atual) < 0.0005) atual = alvo;
+      const ciclo = Math.min(N - 1, Math.floor(atual));
+      const k = Math.min(info.total - 1, Math.round((atual - ciclo) * (info.total - 1)));
+      desenhar(k, ciclo);
+      quadroGrande(ciclo, k);
+      if (visivel || atual !== alvo) requestAnimationFrame(passo); else rodando = false;
+    };
+    const acordar = () => { if (!rodando && info) { rodando = true; requestAnimationFrame(passo); } };
+
+    const iniciar = () => {
+      fetch(BASE + "piloto.json").then((r) => r.json()).then((d) => {
+        info = d;
+        const src = (i) => `${BASE}p_${String(i + 1).padStart(4, "0")}.webp`;
+        const carregar = (i) => {
+          if (quadros[i]) return;
+          const im = new Image(); im.decoding = "async"; im.src = src(i);
+          im.onload = () => { desenhado = -1; acordar(); };
+          quadros[i] = im;
+        };
+        const fila = [];
+        for (const p of [8, 4, 2, 1]) for (let i = 0; i < d.total; i += p) if (!fila.includes(i)) fila.push(i);
+        let k = 0;
+        const lote = () => { for (let n = 0; n < 6 && k < fila.length; n++) carregar(fila[k++]); if (k < fila.length) setTimeout(lote, 40); };
+        lote();
+        medir();
+        if (reduzir) { atual = alvo = 0; desenhar(0, 0); } else acordar();
+      }).catch(() => {});
+      fotos.forEach((im) => (im.onload = () => { desenhado = -1; acordar(); }));
+      fotosEl.forEach((el) => (el.loading = "eager"));
+    };
+    new IntersectionObserver(([e], o) => { if (e.isIntersecting) { iniciar(); o.disconnect(); } }, { rootMargin: "150% 0px" }).observe(galeria);
+    new IntersectionObserver(([e]) => { visivel = e.isIntersecting; if (visivel) acordar(); }).observe(galeria);
+    addEventListener("scroll", acordar, { passive: true });
+    addEventListener("resize", () => { if (info) { medir(); acordar(); } });
+    if (reduzir) quadroGrande(N - 1, info ? info.total : 99);
+  }
+
   /* ── Topo, revelar e ano ──────────────────────────────────────────────── */
   const topo = document.querySelector(".topo");
   const whats = document.querySelector(".whats");

@@ -30,6 +30,7 @@
   </a>
   <nav class="menu" aria-label="Seções">
     <a href="#modelos">Modelos</a>
+    <a href="#galeria">Galeria</a>
     <a href="#sobre">Sobre</a>
     <a href="#diferenciais">Diferenciais</a>
     <a href="#servicos">Serviços</a>
@@ -44,10 +45,11 @@
   <nav class="menu-movel-nav" aria-label="Seções">
     <a href="#inicio" data-secao="inicio"><small>01</small>Início</a>
     <a href="#modelos" data-secao="modelos"><small>02</small>Modelos</a>
-    <a href="#sobre" data-secao="sobre"><small>03</small>Sobre</a>
-    <a href="#diferenciais" data-secao="diferenciais"><small>04</small>Diferenciais</a>
-    <a href="#servicos" data-secao="servicos"><small>05</small>Serviços</a>
-    <a href="#contato" data-secao="contato"><small>06</small>Contato</a>
+    <a href="#galeria" data-secao="galeria"><small>03</small>Galeria</a>
+    <a href="#sobre" data-secao="sobre"><small>04</small>Sobre</a>
+    <a href="#diferenciais" data-secao="diferenciais"><small>05</small>Diferenciais</a>
+    <a href="#servicos" data-secao="servicos"><small>06</small>Serviços</a>
+    <a href="#contato" data-secao="contato"><small>07</small>Contato</a>
   </nav>
   <div class="menu-movel-acoes">
     <a href="#contato" class="menu-movel-cta">Fale conosco</a>
@@ -172,6 +174,27 @@
       </article>
 
       <div class="frota-trilha" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+    </div>
+  </section>
+
+  <!-- GALERIA: o piloto mostra cada foto e coloca no quadro ao lado, conforme a rolagem -->
+  <section id="galeria" class="galeria" aria-label="Galeria de fotos">
+    <div class="galeria-palco">
+      <div class="galeria-topo">
+        <span class="galeria-contador" aria-hidden="true"><b>00</b> / 04</span>
+      </div>
+      <canvas class="galeria-canvas" aria-hidden="true"></canvas>
+      <figure class="galeria-quadro">
+        <div class="galeria-capa">
+          <img src="assets/logo-sm.png" alt="" width="120">
+          <strong>Galeria</strong>
+          <span>Na água com a Carreira</span>
+        </div>
+        <img class="galeria-foto" src="assets/galeria/fotos/galeria-01.webp" alt="Dois pescadores num barco Carreira no rio, um deles segurando um peixe" loading="lazy">
+        <img class="galeria-foto" src="assets/galeria/fotos/galeria-02.webp" alt="Casal pescando num barco Carreira ao pôr do sol" loading="lazy">
+        <img class="galeria-foto" src="assets/galeria/fotos/galeria-03.webp" alt="Equipe de fiscalização ambiental navegando num barco Carreira" loading="lazy">
+        <img class="galeria-foto" src="assets/galeria/fotos/galeria-04.webp" alt="Pescador sentado num barco Carreira ao entardecer" loading="lazy">
+      </figure>
     </div>
   </section>
 
