@@ -904,7 +904,8 @@ p { margin: 0 0 1em; color: var(--texto-suave); text-wrap: pretty; }
   .motor { --palco: clamp(220px, 15.5vw, 290px); }
   .motor-img { height: clamp(330px, 23.5vw, 440px); }
   .motor-hp { font-size: clamp(130px, 11vw, 200px); }
-  .motores-grade { margin-top: clamp(130px, 15vh, 170px); }
+  /* o motor sobressai ~8vw acima do card; o espaço acompanha para não encostar no texto */
+  .motores-grade { margin-top: calc(clamp(110px, 8vw, 150px) + 80px); }
 }
 .motor-desc { min-height: 3.2em; margin-bottom: 20px; }
 .motor-botao { white-space: nowrap; }
