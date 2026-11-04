@@ -614,3 +614,7 @@ p { margin: 0 0 1em; color: var(--texto-suave); text-wrap: pretty; }
 @media (max-width: 760px) { .modelo-texto { bottom: max(11vh, 96px); } }
 /* o brilho de "aventura" não pode ficar preso na janela da animação */
 .chamada.solto .palavra { overflow: visible; }
+/* menos espaço entre a headline e os barcos */
+.chamada { min-height: 0; padding: 18vh var(--gutter) 0; }
+@media (min-width: 761px) { .frota { margin-top: -6vh; } }
+.chamada { z-index: 2; }

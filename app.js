@@ -180,7 +180,7 @@
       const curso = frota.offsetHeight - innerHeight;
       const p = Math.min(0.9999, Math.max(0, -r.top / (curso || 1)));
       // o 1º barco entra quando a seção já tomou boa parte da tela
-      const idx = r.top > innerHeight * 0.3 ? -1 : Math.floor(p * n);
+      const idx = r.top > innerHeight * (celular ? 0.3 : 0.62) ? -1 : Math.floor(p * n);
       const local = p * n - Math.max(0, idx);
 
       if (idx !== ativo) {
