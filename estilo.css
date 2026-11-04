@@ -747,6 +747,8 @@ p { margin: 0 0 1em; color: var(--texto-suave); text-wrap: pretty; }
 .chamada--galeria { padding-bottom: 2vh; z-index: 3; }
 .chamada--galeria + .galeria { margin-top: -14vh; }
 @media (max-width: 760px) { .chamada--galeria { padding-bottom: 2vh; } .chamada--galeria + .galeria { margin-top: -10vh; } }
+/* depois dos motores, o título da galeria fica mais perto dos cards (pedido do cliente) */
+@media (min-width: 761px) { .motores + .chamada--galeria { padding-top: 4vh; } }
 
 /* ── Motores Mercury ──────────────────────────────────────────────────── */
 .motores { position: relative; padding: 0 var(--gutter) clamp(90px, 14vh, 160px); }
