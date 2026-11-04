@@ -743,3 +743,7 @@ p { margin: 0 0 1em; color: var(--texto-suave); text-wrap: pretty; }
   .chamada-sub--fina { font-size: 16px; }
   .chamada-sub--fina::before, .chamada-sub--fina::after { display: none; }
 }
+/* menos espaço entre a headline e o piloto da galeria */
+.chamada--galeria { padding-bottom: 2vh; z-index: 3; }
+.chamada--galeria + .galeria { margin-top: -14vh; }
+@media (max-width: 760px) { .chamada--galeria { padding-bottom: 2vh; } .chamada--galeria + .galeria { margin-top: -10vh; } }
