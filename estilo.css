@@ -1,4 +1,4 @@
-
+﻿
 /* ── Tokens: ajuste pela identidade visual do cliente ───────────────────── */
 :root {
   --fundo: #02031a;          /* MESMA cor usada nos prompts das imagens */
@@ -728,4 +728,18 @@ p { margin: 0 0 1em; color: var(--texto-suave); text-wrap: pretty; }
 @media (prefers-reduced-motion: reduce) {
   .galeria { height: auto; }
   .galeria-palco { position: relative; }
+}
+
+/* ── Chamada da galeria: mesma linguagem da headline dos modelos ───────── */
+.chamada--galeria { padding: 22vh var(--gutter) 16vh; }
+.chamada--galeria .chamada-titulo { max-width: 20ch; }
+.chamada-linha--menor { font-size: .62em; line-height: 1.04; margin-top: .35em; }
+.chamada-sub--fina { font-weight: 300; font-stretch: 100%; letter-spacing: .04em; color: #cfe6f5; max-width: 40ch; }
+.chamada-sub--fina > span { text-wrap: balance; }
+@media (max-width: 760px) {
+  .chamada--galeria { padding: 16vh var(--gutter) 12vh; }
+  .chamada--galeria .chamada-titulo { font-size: 9.2vw; }
+  .chamada-linha--menor { font-size: .66em; }
+  .chamada-sub--fina { font-size: 16px; }
+  .chamada-sub--fina::before, .chamada-sub--fina::after { display: none; }
 }

@@ -113,8 +113,7 @@
   }
 
   /* ── Chamada: headline que sobe palavra por palavra ───────────────────── */
-  const chamada = document.querySelector(".chamada");
-  if (chamada) {
+  document.querySelectorAll(".chamada").forEach((chamada) => {
     let i = 0;
     chamada.querySelectorAll(".chamada-linha").forEach((linha) => {
       const partes = [];
@@ -130,7 +129,7 @@
     else new IntersectionObserver(([e], o) => {
       if (e.isIntersecting) { chamada.classList.add("visto"); o.disconnect(); setTimeout(() => chamada.classList.add("solto"), i * 90 + 1300); }
     }, { threshold: 0.45 }).observe(chamada);
-  }
+  });
 
   /* ── Modelos: um barco por vez, conforme a rolagem ────────────────────── */
   const frota = document.querySelector(".frota");
