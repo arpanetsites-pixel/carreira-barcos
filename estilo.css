@@ -746,7 +746,7 @@ p { margin: 0 0 1em; color: var(--texto-suave); text-wrap: pretty; }
 /* menos espaço entre a headline e o piloto da galeria */
 .chamada--galeria { padding-bottom: 2vh; z-index: 3; }
 .chamada--galeria + .galeria { margin-top: -14vh; }
-@media (max-width: 760px) { .chamada--galeria { padding-bottom: 2vh; } .chamada--galeria + .galeria { margin-top: -10vh; } }
+@media (max-width: 760px) { .chamada--galeria { padding-bottom: 2vh; } .chamada--galeria + .galeria { margin-top: -17vh; } }
 /* depois dos motores, o título da galeria fica mais perto dos cards (pedido do cliente) */
 @media (min-width: 761px) { .motores + .chamada--galeria { padding-top: 4vh; } }
 @media (max-width: 760px) { .motores + .chamada--galeria { padding-top: 0; } }
