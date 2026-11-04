@@ -671,3 +671,18 @@ p { margin: 0 0 1em; color: var(--texto-suave); text-wrap: pretty; }
 .chamada { min-height: 0; padding: 18vh var(--gutter) 0; }
 @media (min-width: 761px) { .frota { margin-top: -6vh; } }
 .chamada { z-index: 2; }
+/* barcos mais altos no desktop: respiro entre o casco e o nome do modelo */
+@media (min-width: 761px) {
+  .modelo-barco { top: 46%; }
+  .modelo-barco--alto { top: 42%; }
+  .frota-luz { background: radial-gradient(60% 38% at 50% 46%, rgb(0 120 255 / .22), transparent 70%), radial-gradient(90% 60% at 50% 100%, rgb(0 204 255 / .08), transparent 70%), linear-gradient(to bottom, var(--fundo), var(--fundo-2) 50%, var(--fundo)); }
+  .frota-luz::after { top: 58%; }
+}
+@media (max-height: 760px) and (min-width: 761px) {
+  .modelo-barco { top: 39%; }
+  .modelo-barco--alto { top: 37%; }
+}
+@media (min-width: 761px) and (max-width: 1300px) {
+  .modelo-barco { top: 40%; }
+  .modelo-barco--alto { top: 38%; }
+}
