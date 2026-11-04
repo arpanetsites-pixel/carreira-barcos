@@ -112,6 +112,26 @@
     mover();
   }
 
+  /* ── Chamada: headline que sobe palavra por palavra ───────────────────── */
+  const chamada = document.querySelector(".chamada");
+  if (chamada) {
+    let i = 0;
+    chamada.querySelectorAll(".chamada-linha").forEach((linha) => {
+      const partes = [];
+      linha.childNodes.forEach((no) => {
+        const destaque = no.nodeType === 1; // <em>aventura</em>
+        no.textContent.split(/\s+/).filter(Boolean).forEach((p) => partes.push({ p, destaque }));
+      });
+      linha.innerHTML = partes.map(({ p, destaque }) =>
+        `<span class="palavra"><span class="palavra-in${destaque ? " palavra--destaque" : ""}" style="--i:${i++}">${p}</span></span>`).join(" ");
+    });
+    chamada.style.setProperty("--total", i);
+    if (reduzir) chamada.classList.add("visto", "solto");
+    else new IntersectionObserver(([e], o) => {
+      if (e.isIntersecting) { chamada.classList.add("visto"); o.disconnect(); setTimeout(() => chamada.classList.add("solto"), i * 90 + 1300); }
+    }, { threshold: 0.45 }).observe(chamada);
+  }
+
   /* ── Modelos: um barco por vez, conforme a rolagem ────────────────────── */
   const frota = document.querySelector(".frota");
   if (frota) {

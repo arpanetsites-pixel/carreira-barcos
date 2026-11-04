@@ -488,3 +488,129 @@ p { margin: 0 0 1em; color: var(--texto-suave); text-wrap: pretty; }
 @media (min-width: 761px) and (max-width: 1100px) {
   .modelo-ficha { display: grid; grid-template-columns: auto auto; }
 }
+/* ── Chamada: headline entre a abertura e os modelos ──────────────────── */
+.chamada {
+  position: relative; isolation: isolate; min-height: 92vh; min-height: 92svh;
+  display: grid; place-content: center; justify-items: center; text-align: center;
+  padding: 14vh var(--gutter);
+}
+.chamada-luz {
+  position: absolute; inset: 0; z-index: -1; pointer-events: none;
+  background: radial-gradient(55% 45% at 50% 50%, rgb(0 110 255 / .2), transparent 70%);
+  opacity: 0; transition: opacity 2s var(--ease);
+}
+.chamada.visto .chamada-luz { opacity: 1; }
+.chamada-titulo {
+  margin: 0; max-width: 16ch;
+  font-size: clamp(40px, 6.4vw, 112px); font-weight: 700; font-stretch: 125%;
+  line-height: .98; letter-spacing: -.025em; text-transform: uppercase; text-wrap: balance;
+}
+.chamada-linha { display: block; }
+/* cada palavra sobe de dentro de uma "janela", saindo do desfoque */
+.palavra { display: inline-block; overflow: hidden; padding: .06em .02em .1em; margin: -.06em 0 -.1em; vertical-align: top; }
+.palavra-in {
+  display: inline-block; --d: calc(var(--i) * 90ms);
+  color: transparent; -webkit-background-clip: text; background-clip: text;
+  background-image: linear-gradient(180deg, #ffffff 20%, #b9cad8 100%);
+  transform: translateY(110%) rotate(4deg); filter: blur(10px); opacity: 0;
+  transition: transform 1.1s var(--ease) var(--d), filter 1s var(--ease) var(--d), opacity .6s var(--ease) var(--d);
+}
+.chamada.visto .palavra-in { transform: none; filter: blur(0); opacity: 1; }
+/* "aventura": azul da marca com um reflexo de luz correndo */
+.palavra--destaque {
+  background-image: linear-gradient(100deg, #00a2ff 0%, #00ccff 35%, #ffffff 50%, #00ccff 65%, #0077ff 100%);
+  background-size: 250% 100%; background-position: 100% 0;
+  filter: blur(10px) drop-shadow(0 0 0 transparent);
+}
+.chamada.visto .palavra--destaque {
+  filter: blur(0) drop-shadow(0 0 28px rgb(0 204 255 / .45));
+  animation: brilho-letra 1.6s ease-in-out calc(var(--d) + 1s) both, brilho-letra 2s ease-in-out calc(var(--d) + 6s) infinite;
+}
+/* frase de apoio entre dois fios de luz */
+.chamada-sub {
+  margin: clamp(26px, 4vh, 48px) 0 0; display: flex; align-items: center; gap: 18px;
+  font: 500 clamp(17px, 1.7vw, 26px)/1.3 var(--fonte-titulo); font-stretch: 112%; color: var(--texto);
+  letter-spacing: .02em;
+}
+.chamada-sub::before, .chamada-sub::after {
+  content: ""; height: 1px; width: clamp(30px, 8vw, 120px);
+  background: linear-gradient(90deg, transparent, var(--acento)); box-shadow: 0 0 12px var(--acento);
+  transform: scaleX(0); transform-origin: right; transition: transform 1.2s var(--ease) calc(var(--total) * 90ms + 300ms);
+}
+.chamada-sub::after { background: linear-gradient(90deg, var(--acento), transparent); transform-origin: left; }
+.chamada-sub > span { opacity: 0; transform: translateY(16px); filter: blur(6px); transition: all 1s var(--ease) calc(var(--total) * 90ms + 200ms); }
+.chamada.visto .chamada-sub::before, .chamada.visto .chamada-sub::after { transform: scaleX(1); }
+.chamada.visto .chamada-sub > span { opacity: 1; transform: none; filter: none; }
+.chamada-sub strong {
+  font-weight: 700; color: transparent; -webkit-background-clip: text; background-clip: text;
+  background-image: linear-gradient(100deg, #00ccff 0%, #ffffff 50%, #00ccff 100%); background-size: 250% 100%; background-position: 100% 0;
+}
+.chamada.visto .chamada-sub strong { animation: brilho-letra 1.6s ease-in-out calc(var(--total) * 90ms + 1.2s) both, brilho-letra 2s ease-in-out 7s infinite; }
+@media (max-width: 760px) {
+  .chamada { min-height: 80svh; }
+  .chamada-titulo { font-size: 10.4vw; }
+  .chamada-sub { font-size: 17px; gap: 12px; }
+  .chamada-sub::before, .chamada-sub::after { width: 24px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .palavra-in, .chamada-sub > span { opacity: 1 !important; transform: none !important; filter: none !important; }
+}
+
+/* ── Ficha técnica em cartões, maior e com ícones ─────────────────────── */
+.modelo-ficha { gap: 14px; }
+.modelo-ficha > div {
+  padding: 16px 22px 18px; border-radius: 16px; min-width: 150px;
+  background: linear-gradient(160deg, rgb(0 70 160 / .38), rgb(0 20 70 / .3));
+  border: 1px solid rgb(0 204 255 / .28);
+  box-shadow: 0 14px 40px rgb(0 0 0 / .35), inset 0 1px 0 rgb(255 255 255 / .08);
+  -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px);
+}
+.modelo-ficha > div::before {
+  left: 18px; right: 18px; top: -1px; bottom: auto; width: auto; height: 2px;
+  background: linear-gradient(90deg, transparent, var(--acento), transparent); box-shadow: 0 0 12px var(--acento);
+}
+.modelo-ficha dt {
+  display: flex; align-items: center; gap: 9px; margin-bottom: 8px;
+  font-size: 13px; font-weight: 600; letter-spacing: .2em; color: #cfe6f5;
+}
+.modelo-ficha dt svg { width: 24px; height: 24px; flex: none; color: var(--acento); filter: drop-shadow(0 0 8px rgb(0 204 255 / .6)); }
+.modelo-ficha dd { font-size: clamp(30px, 2.5vw, 44px); font-weight: 700; text-shadow: 0 0 24px rgb(0 204 255 / .25); }
+.modelo-ficha small { font-size: .5em; color: #cfe6f5; }
+@media (min-width: 761px) {
+  .modelo-texto { bottom: max(12vh, 104px); right: calc(var(--gutter) + 64px); }
+}
+@media (min-width: 761px) and (max-width: 1360px) {
+  .modelo-ficha { display: grid; grid-template-columns: auto auto; }
+  .modelo-ficha dd { font-size: 30px; }
+}
+@media (max-width: 760px) {
+  .modelo-ficha { gap: 10px; }
+  .modelo-ficha > div { min-width: 0; padding: 12px 14px 13px; border-radius: 14px; }
+  .modelo-ficha > div::before { left: 12px; right: 12px; }
+  .modelo-ficha dt { font-size: 11px; letter-spacing: .14em; gap: 7px; margin-bottom: 6px; }
+  .modelo-ficha dt svg { width: 20px; height: 20px; }
+  .modelo-ficha dd { font-size: 24px; }
+  .modelo-texto { bottom: max(9vh, 76px); }
+  .modelo-nome { font-size: 19vw; }
+  .modelo-barco, .modelo-barco--alto, .modelo-fantasma { top: 31%; }
+  .frota-luz::after { top: 41%; }
+}
+.frota-topo { justify-content: flex-end; }
+
+/* ajustes finos: nome nunca quebra; ficha cabe em telas médias */
+.modelo-nome { white-space: nowrap; }
+@media (min-width: 761px) and (max-width: 1600px) {
+  .modelo-nome { font-size: clamp(56px, 7.5vw, 130px); }
+  .modelo-ficha { display: flex; }
+  .modelo-ficha > div { min-width: 0; padding: 13px 18px 15px; }
+  .modelo-ficha dd { font-size: clamp(26px, 2.2vw, 34px); }
+  .modelo-ficha dt { font-size: 12px; letter-spacing: .16em; }
+}
+@media (min-width: 761px) and (max-width: 1300px) {
+  .modelo-ficha { display: grid; grid-template-columns: auto auto; }
+  .modelo-barco { top: 49%; width: 76vw; }
+  .modelo-barco--alto { top: 47%; width: 58vw; }
+}
+@media (max-width: 760px) { .modelo-texto { bottom: max(11vh, 96px); } }
+/* o brilho de "aventura" não pode ficar preso na janela da animação */
+.chamada.solto .palavra { overflow: visible; }

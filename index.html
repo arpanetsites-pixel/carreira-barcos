@@ -18,6 +18,12 @@
 </head>
 <body>
 
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-motor" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 16.5a8.5 8.5 0 1 1 15 0"/><path d="M12 13.2 16 8.5"/><circle cx="12" cy="13.5" r="1.3" fill="currentColor"/><path d="M7.2 9.4l.9.7M12 6v1.2M16.8 9.4l-.9.7"/></symbol>
+  <symbol id="i-pessoas" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.2"/><path d="M3 19.5c.6-3.3 3-5.2 6-5.2s5.4 1.9 6 5.2"/><circle cx="17" cy="9" r="2.5"/><path d="M16.2 14.4c2.5-.2 4.3 1.4 4.8 4.4"/></symbol>
+  <symbol id="i-peso" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M9 7.5a3 3 0 1 1 6 0"/><path d="M6.6 9.5h10.8l2.1 10H4.5z"/><path d="M10 15h4"/></symbol>
+  <symbol id="i-tamanho" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h18M3 12l3-3M3 12l3 3M21 12l-3-3M21 12l-3 3"/><path d="M3 5.5v2.5M21 5.5v2.5M3 16v2.5M21 16v2.5"/></symbol>
+</svg>
 <header class="topo">
   <a href="#inicio" class="marca" aria-label="Carreira Barcos">
     <img src="assets/logo-sm.png" alt="Carreira Barcos" class="marca-logo">
@@ -49,12 +55,21 @@
     </div>
   </section>
 
+  <!-- CHAMADA: headline entre a abertura e os modelos -->
+  <section class="chamada" aria-labelledby="chamada-titulo">
+    <div class="chamada-luz" aria-hidden="true"></div>
+    <h2 id="chamada-titulo" class="chamada-titulo">
+      <span class="chamada-linha">Resistência que acompanha</span>
+      <span class="chamada-linha">o seu espírito de <em>aventura</em></span>
+    </h2>
+    <p class="chamada-sub"><span>Grandes pescarias começam com um <strong>Carreira!</strong></span></p>
+  </section>
+
   <!-- MODELOS: os barcos entram um por um com a rolagem -->
   <section id="modelos" class="frota" style="--n: 4" aria-label="Modelos Carreira">
     <div class="frota-palco">
       <div class="frota-luz" aria-hidden="true"></div>
       <div class="frota-topo">
-        <span class="rotulo">Linha Carreira · Modelos</span>
         <span class="frota-contador" aria-hidden="true"><b>01</b> / 04</span>
       </div>
 
@@ -69,10 +84,10 @@
           <span class="modelo-sobre">Modelo</span>
           <h3 class="modelo-nome">CB35</h3>
           <dl class="modelo-ficha">
-            <div><dt>Motor</dt><dd><span data-conta="35">35</span> <small>HP</small></dd></div>
-            <div><dt>Capacidade</dt><dd>até <span data-conta="3">3</span> <small>pessoas</small></dd></div>
-            <div><dt>Peso</dt><dd><span data-conta="60">60</span> <small>kg</small></dd></div>
-            <div><dt>Tamanho</dt><dd>6 × 1,25 <small>m</small></dd></div>
+            <div><dt><svg aria-hidden="true"><use href="#i-motor"/></svg>Motor</dt><dd><span data-conta="35">35</span> <small>HP</small></dd></div>
+            <div><dt><svg aria-hidden="true"><use href="#i-pessoas"/></svg>Capacidade</dt><dd>até <span data-conta="3">3</span> <small>pessoas</small></dd></div>
+            <div><dt><svg aria-hidden="true"><use href="#i-peso"/></svg>Peso</dt><dd><span data-conta="60">60</span> <small>kg</small></dd></div>
+            <div><dt><svg aria-hidden="true"><use href="#i-tamanho"/></svg>Tamanho</dt><dd>6 × 1,25 <small>m</small></dd></div>
           </dl>
           <p class="modelo-linha">Bagageiro · Espaço para vara de pesca</p>
         </div>
@@ -89,10 +104,10 @@
           <span class="modelo-sobre">Modelo</span>
           <h3 class="modelo-nome">CB40</h3>
           <dl class="modelo-ficha">
-            <div><dt>Motor</dt><dd><span data-conta="35">35</span> <small>HP</small></dd></div>
-            <div><dt>Capacidade</dt><dd>até <span data-conta="4">4</span> <small>pessoas</small></dd></div>
-            <div><dt>Peso</dt><dd><span data-conta="70">70</span> <small>kg</small></dd></div>
-            <div><dt>Tamanho</dt><dd>6 × 1,25 <small>m</small></dd></div>
+            <div><dt><svg aria-hidden="true"><use href="#i-motor"/></svg>Motor</dt><dd><span data-conta="35">35</span> <small>HP</small></dd></div>
+            <div><dt><svg aria-hidden="true"><use href="#i-pessoas"/></svg>Capacidade</dt><dd>até <span data-conta="4">4</span> <small>pessoas</small></dd></div>
+            <div><dt><svg aria-hidden="true"><use href="#i-peso"/></svg>Peso</dt><dd><span data-conta="70">70</span> <small>kg</small></dd></div>
+            <div><dt><svg aria-hidden="true"><use href="#i-tamanho"/></svg>Tamanho</dt><dd>6 × 1,25 <small>m</small></dd></div>
           </dl>
           <p class="modelo-linha">Bagageiro · Espaço para vara de pesca</p>
         </div>
@@ -109,10 +124,10 @@
           <span class="modelo-sobre">Modelo</span>
           <h3 class="modelo-nome">CB80</h3>
           <dl class="modelo-ficha">
-            <div><dt>Motor</dt><dd><span data-conta="35">35</span> <small>HP</small></dd></div>
-            <div><dt>Capacidade</dt><dd>até <span data-conta="4">4</span> <small>pessoas</small></dd></div>
-            <div><dt>Peso</dt><dd><span data-conta="70">70</span> <small>kg</small></dd></div>
-            <div><dt>Tamanho</dt><dd>6 × 1,25 <small>m</small></dd></div>
+            <div><dt><svg aria-hidden="true"><use href="#i-motor"/></svg>Motor</dt><dd><span data-conta="35">35</span> <small>HP</small></dd></div>
+            <div><dt><svg aria-hidden="true"><use href="#i-pessoas"/></svg>Capacidade</dt><dd>até <span data-conta="4">4</span> <small>pessoas</small></dd></div>
+            <div><dt><svg aria-hidden="true"><use href="#i-peso"/></svg>Peso</dt><dd><span data-conta="70">70</span> <small>kg</small></dd></div>
+            <div><dt><svg aria-hidden="true"><use href="#i-tamanho"/></svg>Tamanho</dt><dd>6 × 1,25 <small>m</small></dd></div>
           </dl>
           <p class="modelo-linha">Bagageiro · Espaço para vara de pesca</p>
         </div>
@@ -129,10 +144,10 @@
           <span class="modelo-sobre">Modelo</span>
           <h3 class="modelo-nome">CB90</h3>
           <dl class="modelo-ficha">
-            <div><dt>Motor</dt><dd><span data-conta="35">35</span> <small>HP</small></dd></div>
-            <div><dt>Capacidade</dt><dd>até <span data-conta="8">8</span> <small>pessoas</small></dd></div>
-            <div><dt>Peso</dt><dd><span data-conta="90">90</span> <small>kg</small></dd></div>
-            <div><dt>Tamanho</dt><dd>6 × 1,90 <small>m</small></dd></div>
+            <div><dt><svg aria-hidden="true"><use href="#i-motor"/></svg>Motor</dt><dd><span data-conta="35">35</span> <small>HP</small></dd></div>
+            <div><dt><svg aria-hidden="true"><use href="#i-pessoas"/></svg>Capacidade</dt><dd>até <span data-conta="8">8</span> <small>pessoas</small></dd></div>
+            <div><dt><svg aria-hidden="true"><use href="#i-peso"/></svg>Peso</dt><dd><span data-conta="90">90</span> <small>kg</small></dd></div>
+            <div><dt><svg aria-hidden="true"><use href="#i-tamanho"/></svg>Tamanho</dt><dd>6 × 1,90 <small>m</small></dd></div>
           </dl>
           <p class="modelo-linha">Bagageiro · Espaço para vara de pesca</p>
         </div>
