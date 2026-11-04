@@ -228,6 +228,52 @@
     whats.href = `https://wa.me/${num}?text=${encodeURIComponent(S.whatsapp.mensagem || "")}`;
   }
 
+  /* ── Menu do celular ──────────────────────────────────────────────────── */
+  const botaoMenu = document.querySelector(".menu-botao");
+  const menuMovel = document.getElementById("menu-movel");
+  if (botaoMenu && menuMovel) {
+    const linksMenu = [...menuMovel.querySelectorAll("[data-secao]")];
+    const secoes = linksMenu.map((a) => document.getElementById(a.dataset.secao)).filter(Boolean);
+    const marcarAtual = () => {
+      const meio = innerHeight * 0.4;
+      let atual = secoes[0];
+      secoes.forEach((sec) => { if (sec.getBoundingClientRect().top <= meio) atual = sec; });
+      linksMenu.forEach((a) => a.classList.toggle("atual", !!atual && a.dataset.secao === atual.id));
+    };
+    const zap = menuMovel.querySelector(".menu-movel-whats");
+    if (zap && whats) zap.href = whats.href;
+    let fecharTimer;
+    const aberto = () => document.body.classList.contains("menu-aberto");
+    const abrir = () => {
+      clearTimeout(fecharTimer);
+      marcarAtual();
+      menuMovel.hidden = false;
+      requestAnimationFrame(() => requestAnimationFrame(() => document.body.classList.add("menu-aberto")));
+      botaoMenu.setAttribute("aria-expanded", "true");
+      botaoMenu.setAttribute("aria-label", "Fechar menu");
+      document.documentElement.style.overflow = "hidden";
+    };
+    const fechar = () => {
+      document.body.classList.remove("menu-aberto");
+      botaoMenu.setAttribute("aria-expanded", "false");
+      botaoMenu.setAttribute("aria-label", "Abrir menu");
+      document.documentElement.style.overflow = "";
+      fecharTimer = setTimeout(() => { menuMovel.hidden = true; }, 420);
+    };
+    botaoMenu.addEventListener("click", () => (aberto() ? fechar() : abrir()));
+    menuMovel.addEventListener("click", (ev) => {
+      const a = ev.target.closest('a[href^="#"]');
+      if (!a) return;
+      ev.preventDefault();
+      const alvo = document.querySelector(a.getAttribute("href"));
+      fechar();
+      // salta direto: rolar suave por cima da abertura de 720vh ficaria lento e travado
+      requestAnimationFrame(() => alvo && alvo.scrollIntoView({ behavior: "instant", block: "start" }));
+    });
+    addEventListener("keydown", (ev) => { if (ev.key === "Escape" && aberto()) fechar(); });
+    matchMedia("(min-width: 761px)").addEventListener("change", (m) => { if (m.matches && aberto()) fechar(); });
+  }
+
   /* ── Formulário → e-mail ──────────────────────────────────────────────── */
   const form = document.querySelector(".form");
   if (form && S.contato) {

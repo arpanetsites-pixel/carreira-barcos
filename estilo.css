@@ -67,7 +67,60 @@ p { margin: 0 0 1em; color: var(--texto-suave); text-wrap: pretty; }
 .menu a { text-decoration: none; opacity: .8; transition: opacity .3s; }
 .menu a:hover { opacity: 1; }
 .menu-cta { border: 1px solid var(--linha); padding: 9px 16px; border-radius: 999px; opacity: 1 !important; }
-@media (max-width: 760px) { .menu a:not(.menu-cta) { display: none; } }
+.menu-botao { display: none; }
+.menu-movel { display: none; }
+@media (max-width: 760px) {
+  .menu { display: none; }
+  .topo { padding-top: max(14px, env(safe-area-inset-top)); padding-bottom: 14px; }
+  .menu-botao {
+    display: grid; place-content: center; gap: 5px; width: 46px; height: 46px; padding: 0;
+    border: 1px solid var(--linha); border-radius: 999px; background: rgb(2 3 26 / .45);
+    backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); color: var(--texto); cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .menu-botao span { display: block; width: 18px; height: 1.6px; border-radius: 2px; background: currentColor; transition: transform .45s var(--ease), opacity .3s; }
+  .menu-aberto .menu-botao span:nth-child(1) { transform: translateY(6.6px) rotate(45deg); }
+  .menu-aberto .menu-botao span:nth-child(2) { opacity: 0; transform: scaleX(.2); }
+  .menu-aberto .menu-botao span:nth-child(3) { transform: translateY(-6.6px) rotate(-45deg); }
+  .menu-aberto .topo { z-index: 80; background: transparent; backdrop-filter: none; -webkit-backdrop-filter: none; }
+
+  .menu-movel {
+    display: flex; flex-direction: column; justify-content: space-between; gap: 32px;
+    position: fixed; inset: 0; z-index: 70; overflow-y: auto; overscroll-behavior: contain;
+    padding: calc(max(14px, env(safe-area-inset-top)) + 84px) var(--gutter) max(28px, env(safe-area-inset-bottom));
+    background: radial-gradient(120% 70% at 100% 0%, rgb(0 204 255 / .14), transparent 60%), rgb(2 3 26 / .94);
+    backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px);
+    opacity: 0; visibility: hidden; transition: opacity .4s var(--ease), visibility 0s .4s;
+  }
+  .menu-movel[hidden] { display: none; }
+  .menu-aberto .menu-movel { opacity: 1; visibility: visible; transition: opacity .4s var(--ease); }
+  .menu-movel-nav { display: flex; flex-direction: column; }
+  .menu-movel-nav a {
+    display: flex; align-items: baseline; gap: 14px; padding: 13px 0; text-decoration: none;
+    border-bottom: 1px solid var(--linha);
+    font-family: var(--fonte-titulo); font-stretch: 125%; font-weight: 600; font-size: clamp(26px, 8vw, 34px); line-height: 1.1;
+    color: var(--texto-suave); -webkit-tap-highlight-color: transparent;
+    opacity: 0; transform: translateY(14px); transition: opacity .5s var(--ease), transform .5s var(--ease), color .3s;
+  }
+  .menu-movel-nav a small { font-family: var(--fonte-texto); font-stretch: 100%; font-size: 12px; font-weight: 400; letter-spacing: .14em; color: var(--acento); opacity: .7; }
+  .menu-movel-nav a.atual { color: var(--texto); }
+  .menu-movel-nav a.atual::after { content: ""; width: 8px; height: 8px; margin-left: auto; align-self: center; border-radius: 50%; background: var(--acento); box-shadow: 0 0 12px var(--acento); }
+  .menu-movel-nav a:active { color: var(--acento); }
+  .menu-aberto .menu-movel-nav a { opacity: 1; transform: none; }
+  .menu-aberto .menu-movel-nav a:nth-child(2) { transition-delay: .04s; }
+  .menu-aberto .menu-movel-nav a:nth-child(3) { transition-delay: .08s; }
+  .menu-aberto .menu-movel-nav a:nth-child(4) { transition-delay: .12s; }
+  .menu-aberto .menu-movel-nav a:nth-child(5) { transition-delay: .16s; }
+  .menu-aberto .menu-movel-nav a:nth-child(6) { transition-delay: .2s; }
+  .menu-movel-acoes { display: grid; gap: 12px; }
+  .menu-movel-acoes a { display: block; text-align: center; text-decoration: none; padding: 15px 18px; border-radius: 999px; font-weight: 600; letter-spacing: .03em; }
+  .menu-movel-cta { background: var(--acento); color: var(--acento-texto); }
+  .menu-movel-whats { border: 1px solid var(--linha); color: var(--texto); }
+  .menu-aberto .whats, .menu-aberto .som-alternar { opacity: 0 !important; pointer-events: none; }
+}
+@media (max-width: 760px) and (prefers-reduced-motion: reduce) {
+  .menu-movel, .menu-movel-nav a { transition: none !important; transform: none !important; }
+}
 
 /* ── Abertura cinematográfica ──────────────────────────────────────────── */
 .cine { position: relative; height: var(--altura, 400vh); }
