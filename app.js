@@ -414,13 +414,15 @@
   /* ── Topo, revelar e ano ──────────────────────────────────────────────── */
   const topo = document.querySelector(".topo");
   const whats = document.querySelector(".whats");
-  let formNaTela = false; // o botão flutuante se recolhe para não cobrir o "Enviar"
+  let formNaTela = false, compraNaTela = false; // o flutuante se recolhe no "Enviar" e no botão grande de compra
   const aoRolar = () => {
     topo && topo.classList.toggle("rolou", scrollY > 40);
-    whats && whats.classList.toggle("visivel", scrollY > innerHeight * 0.6 && !formNaTela);
+    whats && whats.classList.toggle("visivel", scrollY > innerHeight * 0.6 && !formNaTela && !compraNaTela);
   };
   const formEl = document.querySelector(".form");
   if (formEl) new IntersectionObserver(([e]) => { formNaTela = e.isIntersecting; aoRolar(); }).observe(formEl);
+  const compraEl = document.querySelector(".fechamento");
+  if (compraEl) new IntersectionObserver(([e]) => { compraNaTela = e.isIntersecting; aoRolar(); }, { threshold: 0.35 }).observe(compraEl);
   addEventListener("scroll", aoRolar, { passive: true });
   aoRolar();
 
@@ -434,6 +436,26 @@
   if (whats && S.whatsapp) {
     const num = String(S.whatsapp.numero || "").replace(/\D/g, "");
     whats.href = `https://wa.me/${num}?text=${encodeURIComponent(S.whatsapp.mensagem || "")}`;
+  }
+
+  /* ── Comprar: botão grande do WhatsApp + atendente "digitando" ───────── */
+  const fechamento = document.querySelector(".fechamento");
+  if (fechamento) {
+    const zap = fechamento.querySelector(".zap");
+    if (zap && S.whatsapp && S.whatsapp.numero) {
+      const num = String(S.whatsapp.numero).replace(/\D/g, "");
+      zap.href = `https://wa.me/${num}?text=${encodeURIComponent(zap.dataset.msg || S.whatsapp.mensagem || "")}`;
+    }
+    const [b1, b2] = fechamento.querySelectorAll(".balao");
+    new IntersectionObserver(([e], o) => {
+      if (!e.isIntersecting) return;
+      o.disconnect();
+      fechamento.classList.add("visto");
+      const t = reduzir ? 0 : 1;
+      setTimeout(() => b1 && b1.classList.add("ativo"), 900 * t);
+      setTimeout(() => b1 && b1.classList.add("respondeu"), 2600 * t);
+      setTimeout(() => b2 && b2.classList.add("ativo"), 3600 * t);
+    }, { threshold: 0.3 }).observe(fechamento);
   }
 
   /* ── Motores: orçamento direto no WhatsApp + luz que segue o mouse ───── */
