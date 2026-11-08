@@ -223,6 +223,18 @@
     const ok = (im) => im && im.complete && im.naturalWidth;
 
     const ENTRA = [17, 29]; // quadros da sequência em que o cartão sai da mão e pousa na pilha
+    // celular: em vez de levar o cartão para a lateral, o piloto DESCE o cartão até a pilha e sobe com o próximo.
+    // Usa o trecho do vídeo em que ele traz o cartão de baixo (quadros 60→95), tocado ao contrário para descer.
+    const SOLTA = 66; // quadro (descendo) em que a foto sai da mão e segue sozinha até a pilha
+    const mobileSeq = (u, ciclo) => {
+      // segura o cartão · prepara (95→72, quase parado no vídeo, então rápido) · desce devagar (72→60) · sobe com o próximo
+      const A = 0.12, P = 0.2, B = 0.5;
+      const r = suave(Math.min(1, Math.max(0, (u - 0.36) / 0.24)));
+      if (u < A) return { k: 95, foto: ciclo, r: 0 };
+      if (u < P) return { k: Math.round(95 - ((u - A) / (P - A)) * 23), foto: ciclo, r: 0 };
+      if (u < B) return { k: Math.round(72 - ((u - P) / (B - P)) * 12), foto: r > 0 ? -1 : ciclo, r };
+      return { k: Math.round(60 + suave((u - B) / (1 - B)) * 35), foto: (ciclo + 1) % N, r };
+    };
     // posição do cartão na tela: vídeo ancorado embaixo; no celular, só o lado do piloto
     const QUADRO_V = { x: 0.62, y: 0.19, w: 0.36 }; // quadro grande, em fração do vídeo (desktop)
     let L = null; // layout atual em pixels CSS
@@ -243,7 +255,7 @@
         const qx = (W - qw) / 2, qy = y + h * SOBRE;
         Object.assign(quadroEl.style, { left: `${qx}px`, top: `${qy}px`, width: `${qw}px` });
         // a foto sai do cartão que está na mão do piloto (quadro em que ele solta) e desce até a pilha
-        const q = info && info.quads[ENTRA[0]];
+        const q = info && info.quads[SOLTA];
         if (q) {
           const cx = q.reduce((s, p) => s + p[0], 0) / 4, cy = q.reduce((s, p) => s + p[1], 0) / 4;
           SAI.x = ((L.x + (cx - L.sx) * L.esc) - (qx + qw / 2)) / qw * 100;
@@ -305,19 +317,20 @@
     };
 
     let desenhado = -1, desenhadoFoto = -1;
-    const desenhar = (k, ciclo) => {
+    // fotoFixa: no celular a sequência decide a foto do cartão (-1 = cartão vazio, a foto já saiu da mão)
+    const desenhar = (k, ciclo, fotoFixa) => {
       if (!info || !L) return;
       // quadro pronto mais próximo
       let j = -1;
       for (let d = 0; d < info.total && j < 0; d++) { if (ok(quadros[k - d])) j = k - d; else if (ok(quadros[k + d])) j = k + d; }
       if (j < 0) return;
-      const foto = j >= info.trocaFoto ? (ciclo + 1) % N : ciclo;
+      const foto = fotoFixa !== undefined ? fotoFixa : j >= info.trocaFoto ? (ciclo + 1) % N : ciclo;
       if (j === desenhado && foto === desenhadoFoto) return;
       g.setTransform(1, 0, 0, 1, 0, 0);
       g.clearRect(0, 0, tela.width, tela.height);
       g.setTransform(L.dpr, 0, 0, L.dpr, 0, 0);
       const q = info.quads[j];
-      if (q && ok(fotos[foto])) fotoNoCartao(fotos[foto], q);
+      if (q && foto >= 0 && ok(fotos[foto])) fotoNoCartao(fotos[foto], q);
       g.drawImage(quadros[j], L.sx, 0, L.sw, 900, L.x, L.y, L.w, L.h);
       // some com as bordas do vídeo: funde no fundo da seção
       g.globalCompositeOperation = "destination-in";
@@ -354,8 +367,8 @@
     const SAI = celular ? { x: 20, y: -80 } : { x: -62, y: 6 }; // no celular é recalculado em medir()
     const suave = (x) => x * x * (3 - 2 * x);
     let ultimaEntrada = -1;
-    const quadroGrande = (ciclo, k) => {
-      const r = suave(Math.min(1, Math.max(0, (k - ENTRA[0]) / (ENTRA[1] - ENTRA[0]))));
+    const quadroGrande = (ciclo, k, rFixo) => {
+      const r = rFixo !== undefined ? rFixo : suave(Math.min(1, Math.max(0, (k - ENTRA[0]) / (ENTRA[1] - ENTRA[0]))));
       const topo = ciclo - 1 + r; // posição "contínua" do topo da pilha
       pos(capa, -1, 1, -1.5, 0.74, topo > 3.5 ? 0 : 1, fundo(topo + 1), 1);
       fotosEl.forEach((el, i) => {
@@ -394,9 +407,15 @@
       atual += (alvo - atual) * 0.16;
       if (Math.abs(alvo - atual) < 0.0005) atual = alvo;
       const ciclo = Math.min(N - 1, Math.floor(atual));
-      const k = Math.min(info.total - 1, Math.round((atual - ciclo) * (info.total - 1)));
-      desenhar(k, ciclo);
-      quadroGrande(ciclo, k);
+      if (celular) {
+        const m = mobileSeq(atual - ciclo, ciclo);
+        desenhar(m.k, ciclo, m.foto);
+        quadroGrande(ciclo, m.k, m.r);
+      } else {
+        const k = Math.min(info.total - 1, Math.round((atual - ciclo) * (info.total - 1)));
+        desenhar(k, ciclo);
+        quadroGrande(ciclo, k);
+      }
       if (visivel || atual !== alvo) requestAnimationFrame(passo); else rodando = false;
     };
     const acordar = () => { if (!rodando && info) { rodando = true; requestAnimationFrame(passo); } };
