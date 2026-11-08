@@ -312,7 +312,7 @@
       g.fillStyle = fv; g.fillRect(0, 0, tela.width, tela.height);
       if (!celular) {
         const fh = g.createLinearGradient(L.x, 0, L.x + L.w, 0);
-        fh.addColorStop(0, "rgba(0,0,0,0)"); fh.addColorStop(0.07, "#000"); fh.addColorStop(0.93, "#000"); fh.addColorStop(1, "rgba(0,0,0,0)");
+        fh.addColorStop(0, "rgba(0,0,0,0)"); fh.addColorStop(0.2, "#000"); fh.addColorStop(0.93, "#000"); fh.addColorStop(1, "rgba(0,0,0,0)");
         g.fillStyle = fh; g.fillRect(0, 0, tela.width, tela.height);
       }
       g.globalCompositeOperation = "source-over";

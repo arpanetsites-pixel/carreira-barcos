@@ -697,6 +697,21 @@ p { margin: 0 0 1em; color: var(--texto-suave); text-wrap: pretty; }
   content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none;
   background: radial-gradient(38% 50% at 76% 52%, rgb(0 120 255 / .16), transparent 70%);
 }
+/* paisagem realista atrás do piloto: miolo na cor exata do fundo do vídeo, para a borda do vídeo sumir */
+.galeria-paisagem {
+  position: absolute; inset: 0; z-index: -2; pointer-events: none;
+  background:
+    radial-gradient(48% 62% at 46% 62%, rgb(7 9 29) 62%, rgb(7 9 29 / .6) 82%, rgb(7 9 29 / 0)),
+    linear-gradient(90deg, rgb(7 9 29 / .45), rgb(7 9 29 / .1) 45%, rgb(7 9 29 / .25)),
+    url("assets/galeria/paisagem.webp") center 60% / cover no-repeat;
+  -webkit-mask-image: linear-gradient(transparent, #000 18%, #000 80%, transparent);
+          mask-image: linear-gradient(transparent, #000 18%, #000 80%, transparent);
+}
+@media (max-width: 760px) {
+  .galeria-paisagem {
+    background: linear-gradient(rgb(7 9 29 / .2), rgb(7 9 29 / .35)), url("assets/galeria/paisagem-m.webp") center 40% / cover no-repeat;
+  }
+}
 .galeria-canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
 .galeria-topo { position: absolute; z-index: 4; top: max(96px, 13vh); right: var(--gutter); }
 .galeria-contador { font: 500 13px/1 var(--fonte-texto); letter-spacing: .3em; color: var(--texto-suave); transition: opacity .5s; }
