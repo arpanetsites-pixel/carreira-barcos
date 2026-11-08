@@ -1081,6 +1081,21 @@ p { margin: 0 0 1em; color: var(--texto-suave); text-wrap: pretty; }
 }
 @media (prefers-reduced-motion: reduce) { .solucao-icone img, .solucao-icone::before { animation: none; } }
 
+/* celular, encerramento: título maior e centralizado; atendente primeiro, botão do WhatsApp logo abaixo dela */
+@media (max-width: 760px) {
+  .fechamento-texto { display: contents; }
+  .fechamento-grade { gap: 0; justify-items: center; }
+  .fechamento-selo { order: 1; justify-self: center; }
+  .fechamento .fechamento-titulo { order: 2; text-align: center; font-size: 13.4vw; line-height: .98; letter-spacing: -.04em; }
+  .fechamento .fechamento-titulo span { display: inline; }
+  .fechamento-titulo span:first-child::after { content: " "; }
+  .fechamento-sub { order: 3; text-align: center; margin-bottom: 8px; }
+  .fechamento-atendente { order: 4; }
+  .fechamento-acao { order: 5; width: 100%; margin-top: -14px; position: relative; z-index: 4; }
+  .fechamento-garantias { order: 6; width: 100%; }
+  .fechamento { padding-bottom: 6vh; }
+}
+
 /* celular: headline da abertura maior e mais perto do barco; motores mais perto da ficha do último modelo */
 @media (max-width: 760px) {
   .cine + .chamada { padding-top: 6vh; }
