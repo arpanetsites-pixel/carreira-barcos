@@ -1102,12 +1102,17 @@ p { margin: 0 0 1em; color: var(--texto-suave); text-wrap: pretty; }
   .fechamento { padding-bottom: 6vh; }
 }
 
+/* computador: headline da abertura em 4 linhas ("Alta resistência / em cada detalhe. / Seu barco / direto da fábrica.") */
+@media (min-width: 761px) {
+  .cine + .chamada .chamada-titulo { max-width: none; font-size: clamp(40px, min(5.2vw, 9vh), 92px); }
+}
+
 /* celular: headline da abertura maior e mais perto do barco; motores mais perto da ficha do último modelo */
 @media (max-width: 760px) {
   .cine + .chamada { padding-top: 6vh; }
   .cine + .chamada .chamada-titulo { font-size: 11.3vw; letter-spacing: -.04em; text-wrap: wrap; } /* sem "balance": evita palavra sozinha na linha */
   .cine + .chamada .chamada-linha { display: inline; }
-  .cine + .chamada .chamada-linha:first-child::after { content: " "; }
+  .cine + .chamada .chamada-linha:not(:last-child)::after { content: " "; }
   .chamada--motores { padding-top: 1vh; }
 }
 
