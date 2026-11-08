@@ -652,6 +652,11 @@ p { margin: 0 0 1em; color: var(--texto-suave); text-wrap: pretty; }
 
 /* ajustes finos: nome nunca quebra; ficha cabe em telas médias */
 .modelo-nome { white-space: nowrap; }
+/* nomes "CARREIRA 35" (11 letras): tamanho calculado para caber ao lado da ficha */
+.modelo-nome { font-size: clamp(44px, 4.7vw, 104px) !important; }
+@media (min-width: 761px) and (max-width: 1600px) { .modelo-nome { font-size: clamp(40px, 5vw, 84px) !important; } }
+@media (min-width: 761px) and (max-width: 1150px) { .modelo-nome { font-size: 4.6vw !important; } }
+@media (max-width: 760px) { .modelo-nome { font-size: 9.6vw !important; } }
 @media (min-width: 761px) and (max-width: 1600px) {
   .modelo-nome { font-size: clamp(56px, 7.5vw, 130px); }
   .modelo-ficha { display: flex; }

@@ -144,7 +144,7 @@
       const h = m.querySelector(".modelo-nome");
       const nome = h.textContent.trim();
       h.setAttribute("aria-label", nome);
-      h.innerHTML = [...nome].map((c, i) => `<span class="letra" style="--i:${i}" aria-hidden="true">${c}</span>`).join("");
+      h.innerHTML = [...nome].map((c, i) => `<span class="letra" style="--i:${i}" aria-hidden="true">${c === " " ? "&nbsp;" : c}</span>`).join("");
     });
 
     // imagens dos barcos começam a baixar quando a abertura está perto do fim
