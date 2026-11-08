@@ -61,7 +61,7 @@ p { margin: 0 0 1em; color: var(--texto-suave); text-wrap: pretty; }
 }
 .topo.rolou { background: rgb(2 3 26 / .6); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); }
 .marca { text-decoration: none; display: flex; align-items: center; }
-.marca-logo { height: 40px; width: auto; }
+.marca-logo { height: 36px; width: auto; } /* logo horizontal (símbolo + nome) */
 .marca-texto { font-family: var(--fonte-titulo); font-size: 22px; letter-spacing: .02em; }
 .menu { display: flex; gap: 28px; align-items: center; font-size: 14px; letter-spacing: .04em; }
 .menu a { text-decoration: none; opacity: .8; transition: opacity .3s; }
@@ -288,8 +288,8 @@ p { margin: 0 0 1em; color: var(--texto-suave); text-wrap: pretty; }
 
 /* ── Carreira Barcos: ajustes ──────────────────────────────────────────── */
 .cartoes { grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); }
-.rodape-painel .marca-logo { height: 34px; }
-@media (max-width: 760px) { .marca-logo { height: 32px; } }.secao { grid-template-columns: minmax(0, 1fr); }
+.rodape-painel .marca-logo { height: 30px; }
+@media (max-width: 760px) { .marca-logo { height: 28px; } }.secao { grid-template-columns: minmax(0, 1fr); }
 @media (max-width: 860px) {
   .momento--centro { left: var(--gutter); right: var(--gutter); width: auto; transform: translateY(24px); }
   .momento--centro.ativo { transform: none; }
@@ -734,7 +734,7 @@ p { margin: 0 0 1em; color: var(--texto-suave); text-wrap: pretty; }
   display: grid; place-content: center; justify-items: center; gap: 10px; text-align: center; color: var(--texto);
   border: clamp(8px, 1.1vw, 18px) solid #f4f6f8; background: radial-gradient(80% 70% at 50% 40%, #0d1a4a, #040620);
 }
-.galeria-capa img { width: clamp(80px, 9vw, 140px); height: auto; opacity: .95; }
+.galeria-capa img { width: clamp(150px, 15vw, 240px); height: auto; opacity: .95; }
 .galeria-capa strong { font: 700 clamp(26px, 3.2vw, 52px)/1 var(--fonte-titulo); letter-spacing: .02em; }
 .galeria-capa span { font-size: clamp(11px, .9vw, 14px); letter-spacing: .3em; text-transform: uppercase; color: var(--acento); }
 .galeria-foto { object-fit: cover; background: #f4f6f8; opacity: 0; }
