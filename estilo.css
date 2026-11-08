@@ -1055,6 +1055,8 @@ p { margin: 0 0 1em; color: var(--texto-suave); text-wrap: pretty; }
   display: grid; align-items: center;
 }
 .fechamento-luz { position: absolute; inset: 0; z-index: -1; pointer-events: none;
+  -webkit-mask-image: linear-gradient(transparent, #000 12%, #000 72%, transparent);
+          mask-image: linear-gradient(transparent, #000 12%, #000 72%, transparent);
   background:
     radial-gradient(40% 55% at 74% 55%, rgb(0 120 255 / .22), transparent 70%),
     radial-gradient(30% 40% at 62% 82%, rgb(var(--zap-rgb) / .16), transparent 70%),
@@ -1126,8 +1128,9 @@ p { margin: 0 0 1em; color: var(--texto-suave); text-wrap: pretty; }
   filter: blur(30px); animation: aura 7s ease-in-out infinite; }
 @keyframes aura { 50% { transform: scale(1.08); opacity: .75; } }
 .atendente-foto { width: 100%; height: 100%; display: block; object-fit: cover;
-  -webkit-mask-image: radial-gradient(62% 56% at 52% 46%, #000 60%, transparent 100%), linear-gradient(#000 70%, transparent 98%);
-          mask-image: radial-gradient(62% 56% at 52% 46%, #000 60%, transparent 100%), linear-gradient(#000 70%, transparent 98%);
+  /* closest-side: zera exatamente nas bordas da foto, nunca sobra retângulo */
+  -webkit-mask-image: radial-gradient(closest-side at 50% 50%, #000 74%, transparent 100%), linear-gradient(#000 70%, transparent 98%);
+          mask-image: radial-gradient(closest-side at 50% 50%, #000 74%, transparent 100%), linear-gradient(#000 70%, transparent 98%);
   -webkit-mask-composite: source-in; mask-composite: intersect;
   opacity: 0; transform: translateY(40px) scale(.97); filter: blur(6px);
   transition: opacity 1.4s var(--ease), transform 1.6s var(--ease), filter 1.4s var(--ease); }
