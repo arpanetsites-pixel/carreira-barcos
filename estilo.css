@@ -1052,6 +1052,42 @@ p { margin: 0 0 1em; color: var(--texto-suave); text-wrap: pretty; }
 }
 @media (prefers-reduced-motion: reduce) { .solucao-bolhas { display: none; } }
 
+/* ícones 3D: objeto solto, flutuando sobre um brilho (sem caixa) */
+.solucao-icone { position: relative; width: 112px; height: 112px; background: none; border: 0; box-shadow: none; border-radius: 0; }
+.solucao-icone::before { content: ""; position: absolute; left: 12%; right: 12%; bottom: 2%; height: 22%; border-radius: 50%; z-index: -1;
+  background: radial-gradient(closest-side, rgb(var(--cor-rgb) / .55), transparent); filter: blur(10px); animation: icone-sombra 5s ease-in-out infinite; }
+.solucao-icone img { width: 100%; height: 100%; object-fit: contain; filter: drop-shadow(0 14px 18px rgb(0 0 0 / .45)); animation: icone-flutua 5s ease-in-out infinite; }
+.solucao:nth-child(2) .solucao-icone img, .solucao:nth-child(2) .solucao-icone::before { animation-delay: -1.2s; }
+.solucao:nth-child(3) .solucao-icone img, .solucao:nth-child(3) .solucao-icone::before { animation-delay: -2.4s; }
+.solucao:hover .solucao-icone { transform: scale(1.08); }
+@keyframes icone-flutua { 50% { transform: translateY(-7px) rotate(-2deg); } }
+@keyframes icone-sombra { 50% { transform: scaleX(.82); opacity: .7; } }
+.solucao--verde .solucao-icone { width: 150px; height: 150px; }
+
+/* celular: card centralizado, ícone 3D grande no meio, títulos maiores */
+@media (max-width: 760px) {
+  .solucao { align-items: center; text-align: center; padding: 34px 24px 36px; }
+  .solucao-num { right: 50%; translate: 50% 0; top: 6px; font-size: 128px; opacity: .8; }
+  .solucao-icone { width: 150px; height: 150px; margin: 0 auto 22px; }
+  .solucao-marca { font-size: 11.5px; letter-spacing: .2em; }
+  .solucao-titulo { font-size: clamp(30px, 9vw, 38px); line-height: 1.02; margin-bottom: 16px; }
+  .solucao-desc { font-size: 16px; }
+  .solucao-link { align-self: center; }
+  .solucao--verde { justify-items: stretch; }
+  .solucao--verde > * { min-width: 0; }
+  .solucao--verde .solucao-icone { width: 170px; height: 170px; margin: 0 auto 22px; border-radius: 0; justify-self: center; }
+  .solucao--verde .solucao-titulo { font-size: 7vw; letter-spacing: -.01em; }
+  .solucao--verde .solucao-link--cheio { justify-self: stretch; }
+}
+@media (prefers-reduced-motion: reduce) { .solucao-icone img, .solucao-icone::before { animation: none; } }
+
+/* celular: headline da abertura maior e mais perto do barco; motores mais perto da ficha do último modelo */
+@media (max-width: 760px) {
+  .cine + .chamada { padding-top: 6vh; }
+  .cine + .chamada .chamada-titulo { font-size: 11.3vw; letter-spacing: -.04em; }
+  .chamada--motores { padding-top: 1vh; }
+}
+
 /* ── Comprar: encerramento de venda (atendente + WhatsApp) ─────────────── */
 .fechamento {
   --zap: #25d366; --zap-rgb: 37 211 102;
