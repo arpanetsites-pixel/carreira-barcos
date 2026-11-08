@@ -741,7 +741,7 @@ p { margin: 0 0 1em; color: var(--texto-suave); text-wrap: pretty; }
 
 @media (max-width: 760px) {
   .galeria { height: calc(var(--n, 4) * 100svh + 100svh); }
-  .galeria-palco::before { background: radial-gradient(70% 34% at 50% 34%, rgb(0 120 255 / .18), transparent 70%); }
+  .galeria-palco::before { background: radial-gradient(70% 30% at 50% 74%, rgb(0 120 255 / .18), transparent 70%); } /* luz atrás da pilha, que agora fica embaixo */
   .galeria-topo { top: 84px; }
   .galeria-contador b { font-size: 18px; }
 }
@@ -766,7 +766,7 @@ p { margin: 0 0 1em; color: var(--texto-suave); text-wrap: pretty; }
 /* menos espaço entre a headline e o piloto da galeria */
 .chamada--galeria { padding-bottom: 2vh; z-index: 3; }
 .chamada--galeria + .galeria { margin-top: -14vh; }
-@media (max-width: 760px) { .chamada--galeria { padding-bottom: 2vh; } .chamada--galeria + .galeria { margin-top: -17vh; } }
+@media (max-width: 760px) { .chamada--galeria { padding-bottom: 2vh; } .chamada--galeria + .galeria { margin-top: -3vh; } } /* piloto agora fica no topo: sem sobrepor o texto */
 /* depois dos motores, o título da galeria fica mais perto dos cards (pedido do cliente) */
 @media (min-width: 761px) { .solucoes + .chamada--galeria { padding-top: 4vh; } }
 @media (max-width: 760px) { .solucoes + .chamada--galeria { padding-top: 0; } }

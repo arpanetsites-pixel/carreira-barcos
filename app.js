@@ -222,6 +222,7 @@
     const fotos = fotosEl.map((el) => { const im = new Image(); im.decoding = "async"; im.src = el.currentSrc || el.src; return im; });
     const ok = (im) => im && im.complete && im.naturalWidth;
 
+    const ENTRA = [17, 29]; // quadros da sequência em que o cartão sai da mão e pousa na pilha
     // posição do cartão na tela: vídeo ancorado embaixo; no celular, só o lado do piloto
     const QUADRO_V = { x: 0.62, y: 0.19, w: 0.36 }; // quadro grande, em fração do vídeo (desktop)
     let L = null; // layout atual em pixels CSS
@@ -230,11 +231,24 @@
       const dpr = Math.min(window.devicePixelRatio || 1, 2);
       tela.width = Math.round(W * dpr); tela.height = Math.round(H * dpr);
       if (celular) {
+        // celular: piloto em cima, pilha de fotos embaixo — ele "pega" cada foto e coloca à frente, mais abaixo
         const corte = 0.6; // mostra 60% da largura do vídeo (piloto + cartão)
-        const w = W * 1.04, h = w * (900 / (1600 * corte));
-        L = { dpr, sx: 0, sw: 1600 * corte, x: (W - w) / 2, y: H - h, w, h, esc: w / (1600 * corte) };
-        const qw = Math.min(W * 0.8, (H - h - 120) * (700 / 658));
-        Object.assign(quadroEl.style, { left: `${(W - qw) / 2}px`, top: `${Math.max(100, (H - h - qw * 658 / 700) / 2 + 40)}px`, width: `${qw}px` });
+        const TOPO = 78, SOBRE = 0.8; // a pilha começa em 80% da altura do vídeo (sobre a parte que esmaece)
+        let w = W * 1.04, h = w * (900 / (1600 * corte));
+        let qw = W * 0.74, qh = qw * 658 / 700; // a última foto da pilha é ~25% maior: precisa caber na largura
+        const sobra = H - TOPO - 16 - (h * SOBRE + qh);
+        if (sobra < 0) { const f = (H - TOPO - 16) / (h * SOBRE + qh); w *= f; h *= f; qw *= f; qh *= f; }
+        const y = TOPO + Math.max(0, sobra) * 0.45;
+        L = { dpr, sx: 0, sw: 1600 * corte, x: (W - w) / 2, y, w, h, esc: w / (1600 * corte) };
+        const qx = (W - qw) / 2, qy = y + h * SOBRE;
+        Object.assign(quadroEl.style, { left: `${qx}px`, top: `${qy}px`, width: `${qw}px` });
+        // a foto sai do cartão que está na mão do piloto (quadro em que ele solta) e desce até a pilha
+        const q = info && info.quads[ENTRA[0]];
+        if (q) {
+          const cx = q.reduce((s, p) => s + p[0], 0) / 4, cy = q.reduce((s, p) => s + p[1], 0) / 4;
+          SAI.x = ((L.x + (cx - L.sx) * L.esc) - (qx + qw / 2)) / qw * 100;
+          SAI.y = ((L.y + cy * L.esc) - (qy + qh / 2)) / qh * 100;
+        }
       } else {
         let h = H * 0.86, w = h * 16 / 9;
         if (w > W) { w = W; h = w * 9 / 16; }
@@ -314,6 +328,11 @@
         const fh = g.createLinearGradient(L.x, 0, L.x + L.w, 0);
         fh.addColorStop(0, "rgba(0,0,0,0)"); fh.addColorStop(0.2, "#000"); fh.addColorStop(0.93, "#000"); fh.addColorStop(1, "rgba(0,0,0,0)");
         g.fillStyle = fh; g.fillRect(0, 0, tela.width, tela.height);
+      } else {
+        // celular: o corpo do piloto some embaixo, onde começa a pilha de fotos
+        const fb = g.createLinearGradient(0, L.y + L.h * 0.74, 0, L.y + L.h * 0.97);
+        fb.addColorStop(0, "#000"); fb.addColorStop(1, "rgba(0,0,0,0)");
+        g.fillStyle = fb; g.fillRect(0, 0, tela.width, tela.height);
       }
       g.globalCompositeOperation = "source-over";
       desenhado = j; desenhadoFoto = foto;
@@ -332,8 +351,7 @@
     // fotos de baixo escurecem um pouco conforme a pilha cresce
     const fundo = (prof) => (prof <= 0 ? "none" : `brightness(${Math.max(0.55, 1 - prof * 0.12).toFixed(2)})`);
     // de onde a foto sai: no computador o piloto está à esquerda; no celular, embaixo
-    const SAI = celular ? { x: 60, y: 115 } : { x: -62, y: 6 };
-    const ENTRA = [17, 29]; // quadros da sequência em que o cartão sai da mão e pousa na pilha
+    const SAI = celular ? { x: 20, y: -80 } : { x: -62, y: 6 }; // no celular é recalculado em medir()
     const suave = (x) => x * x * (3 - 2 * x);
     let ultimaEntrada = -1;
     const quadroGrande = (ciclo, k) => {
