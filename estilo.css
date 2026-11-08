@@ -289,7 +289,13 @@ p { margin: 0 0 1em; color: var(--texto-suave); text-wrap: pretty; }
 /* ── Carreira Barcos: ajustes ──────────────────────────────────────────── */
 .cartoes { grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); }
 .rodape-painel .marca-logo { height: 30px; }
-@media (max-width: 760px) { .marca-logo { height: 28px; } }.secao { grid-template-columns: minmax(0, 1fr); }
+@media (max-width: 760px) {
+  /* celular: logo centralizada no topo (o botão do menu continua à direita) */
+  .topo { justify-content: flex-end; }
+  .topo .marca { position: absolute; left: 50%; translate: -50% 0; }
+  .topo .marca-logo { height: 34px; }
+  .marca-logo { height: 28px; }
+}.secao { grid-template-columns: minmax(0, 1fr); }
 @media (max-width: 860px) {
   .momento--centro { left: var(--gutter); right: var(--gutter); width: auto; transform: translateY(24px); }
   .momento--centro.ativo { transform: none; }
