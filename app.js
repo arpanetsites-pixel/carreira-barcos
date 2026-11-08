@@ -436,6 +436,8 @@
   if (whats && S.whatsapp) {
     const num = String(S.whatsapp.numero || "").replace(/\D/g, "");
     whats.href = `https://wa.me/${num}?text=${encodeURIComponent(S.whatsapp.mensagem || "")}`;
+    // atendimento é só pelo WhatsApp: "Fale conosco" do topo abre a conversa direto
+    document.querySelectorAll("[data-whats]").forEach((a) => (a.href = whats.href));
   }
 
   /* ── Comprar: botão grande do WhatsApp + atendente "digitando" ───────── */
